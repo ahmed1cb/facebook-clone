@@ -13,3 +13,9 @@ body,
   color: var(--color-text);
   font-family: "Tajawal" !important;
 }
+
+
+::-webkit-scrollbar{
+  display: none !important;
+  width: 0;
+}

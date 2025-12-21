@@ -1,0 +1,217 @@
+import  { useState } from "react";
+import {
+  AppBar,
+  Toolbar,
+  IconButton,
+  InputBase,
+  Avatar,
+  Typography,
+  Box,
+  Badge,
+  Menu,
+  MenuItem,
+  Divider,
+  useTheme,
+} from "@mui/material";
+import {
+  Search as SearchIcon,
+  Home as HomeIcon,
+  OndemandVideo as VideoIcon,
+  Store as StoreIcon,
+  Group as GroupIcon,
+  Notifications as NotificationsIcon,
+  Menu as MenuIcon,
+  ChatBubble as ChatIcon,
+  Settings as SettingsIcon,
+  HelpOutline as HelpIcon,
+  Feedback as FeedbackIcon,
+  Logout as LogoutIcon,
+  DarkMode as DarkModeIcon,
+} from "@mui/icons-material";
+
+export default () => {
+  const theme = useTheme();
+  const [menuAnchor, setMenuAnchor] = useState(null);
+  const menuOpen = Boolean(menuAnchor);
+
+  const handleMenuClick = (event) => {
+    setMenuAnchor(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setMenuAnchor(null);
+  };
+
+  const menuItems = [
+    { icon: <SettingsIcon />, text: "Settings & Privacy", divider: false },
+    { icon: <HelpIcon />, text: "Help & Support", divider: false },
+    { icon: <DarkModeIcon />, text: "Display & Accessibility", divider: false },
+    { icon: <FeedbackIcon />, text: "Give Feedback", divider: true },
+    { icon: <LogoutIcon />, text: "Log Out", divider: false },
+  ];
+
+  return (
+    <>
+      <AppBar
+        position="sticky"
+        elevation={0}
+        sx={{
+          bgcolor: theme.palette.background.paper,
+          borderBottom: `1px solid ${theme.palette.divider}`,
+        }}
+      >
+        <Toolbar sx={{ justifyContent: "space-between" }}>
+          {/* Left Section */}
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Typography
+              variant="h5"
+              sx={{
+                color: theme.palette.primary.main,
+                fontWeight: 700,
+                mr: 2,
+              }}
+            >
+              facebook
+            </Typography>
+            <Box
+              sx={{
+                display: { xs: "none", sm: "flex" },
+                alignItems: "center",
+                bgcolor: theme.palette.mode === "light" ? "#F0F2F5" : "#3A3B3C",
+                borderRadius: 50,
+                px: 2,
+                py: 0.5,
+                minWidth: 240,
+              }}
+            >
+              <SearchIcon sx={{ color: theme.palette.text.secondary, mr: 1 }} />
+              <InputBase
+                placeholder="Search Facebook"
+                sx={{
+                  flex: 1,
+                  color: theme.palette.text.primary,
+                  "& input::placeholder": {
+                    color: theme.palette.text.secondary,
+                    opacity: 1,
+                  },
+                }}
+              />
+            </Box>
+          </Box>
+
+          {/* Center Navigation */}
+          <Box sx={{ display: { xs: "none", md: "flex" }, gap: 1 }}>
+            <IconButton
+              sx={{
+                borderRadius: 2,
+                px: 4,
+                color: theme.palette.primary.main,
+                borderBottom: `3px solid ${theme.palette.primary.main}`,
+              }}
+            >
+              <HomeIcon />
+            </IconButton>
+            <IconButton sx={{ borderRadius: 2, px: 4, color: theme.palette.text.secondary }}>
+              <VideoIcon />
+            </IconButton>
+            <IconButton sx={{ borderRadius: 2, px: 4, color: theme.palette.text.secondary }}>
+              <StoreIcon />
+            </IconButton>
+            <IconButton sx={{ borderRadius: 2, px: 4, color: theme.palette.text.secondary }}>
+              <GroupIcon />
+            </IconButton>
+          </Box>
+
+          {/* Right Section */}
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <IconButton
+              onClick={handleMenuClick}
+              sx={{
+                bgcolor: theme.palette.mode === "light" ? "#E4E6EB" : "#3A3B3C",
+              }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <IconButton
+              sx={{
+                bgcolor: theme.palette.mode === "light" ? "#E4E6EB" : "#3A3B3C",
+              }}
+            >
+              <Badge badgeContent={3} color="error">
+                <ChatIcon />
+              </Badge>
+            </IconButton>
+            <IconButton
+              sx={{
+                bgcolor: theme.palette.mode === "light" ? "#E4E6EB" : "#3A3B3C",
+              }}
+            >
+              <Badge badgeContent={5} color="error">
+                <NotificationsIcon />
+              </Badge>
+            </IconButton>
+            <Avatar sx={{ width: 32, height: 32, cursor: "pointer" }}>U</Avatar>
+          </Box>
+        </Toolbar>
+      </AppBar>
+
+      {/* Menu Dropdown */}
+      <Menu
+        anchorEl={menuAnchor}
+        open={menuOpen}
+        onClose={handleMenuClose}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        PaperProps={{
+          sx: {
+            mt: 1,
+            minWidth: 320,
+            borderRadius: 2,
+            boxShadow: "0 2px 12px rgba(0,0,0,0.15)",
+          },
+        }}
+      >
+        <Box sx={{ p: 2 }}>
+          <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>
+            Menu
+          </Typography>
+        </Box>
+        <Divider />
+        {menuItems.map((item, index) => (
+          <Box key={index}>
+            <MenuItem
+              onClick={handleMenuClose}
+              sx={{
+                py: 1.5,
+                px: 2,
+                gap: 2,
+              }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: 36,
+                  height: 36,
+                  borderRadius: "50%",
+                  bgcolor: theme.palette.mode === "light" ? "#E4E6EB" : "#3A3B3C",
+                }}
+              >
+                {item.icon}
+              </Box>
+              <Typography variant="body1">{item.text}</Typography>
+            </MenuItem>
+            {item.divider && <Divider />}
+          </Box>
+        ))}
+      </Menu>
+    </>
+  );
+};
