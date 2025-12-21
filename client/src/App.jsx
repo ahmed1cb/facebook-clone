@@ -5,23 +5,26 @@ import themes from "./App/Theme/Main";
 import { Route, Routes } from "react-router-dom";
 import Register from "./components/Auth/Register/Register";
 import Login from "./components/Auth/Login/Login";
-
+import themeChanger from "./App/Context/ThemeChangerContext";
 function App() {
   const [mode, setMode] = useState(localStorage.mode ?? "light");
 
   const currentTheme = themes[mode];
-
+  
   return (
     <>
       <ThemeProvider theme={currentTheme}>
         <CssBaseline />
-
+        <themeChanger.Provider value={{mode , setMode}}>
+  
         <Routes>
           <Route path="/auth">
-            <Route path="register" element={<Register />} />
+            <Route path="register" element={<Register/>} />
             <Route path="login" element={<Login />} />
           </Route>
         </Routes>
+        </themeChanger.Provider>
+
       </ThemeProvider>
     </>
   );
