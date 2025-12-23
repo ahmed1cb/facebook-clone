@@ -4,7 +4,7 @@ import Post from './Post'
 export default  ({ posts }) => {
   return (
     
-    <Box>
+    <Box width={'100%'}>
       {posts.map((post) => (
         <Post key={post.id} post={post} />
       ))}

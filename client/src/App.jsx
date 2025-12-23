@@ -9,6 +9,7 @@ import themeChanger from "./App/Context/ThemeChangerContext";
 import Home from "./components/Home/Home";
 import Videos from "./components/Videos/Videos";
 import MainLayout from "./Layouts/MainLayout";
+import Profile from "./components/Profile/Profile";
 function App() {
   const [mode, setMode] = useState(localStorage.mode ?? "light");
 
@@ -23,6 +24,7 @@ function App() {
             <Route path="/" element={<MainLayout/>}>
               <Route index element={<Home />} />
               <Route path="videos" element={<Videos/>} />
+              <Route path="profile" element={<Profile/>} />
             </Route>
 
             <Route path="/auth">

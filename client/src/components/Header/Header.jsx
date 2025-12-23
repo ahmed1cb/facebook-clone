@@ -1,4 +1,4 @@
-import  { useState } from "react";
+import { useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -17,7 +17,6 @@ import {
   Search as SearchIcon,
   Home as HomeIcon,
   OndemandVideo as VideoIcon,
-  Store as StoreIcon,
   Group as GroupIcon,
   Notifications as NotificationsIcon,
   Menu as MenuIcon,
@@ -27,7 +26,9 @@ import {
   Feedback as FeedbackIcon,
   Logout as LogoutIcon,
   DarkMode as DarkModeIcon,
+  Person,
 } from "@mui/icons-material";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default () => {
   const theme = useTheme();
@@ -50,6 +51,9 @@ export default () => {
     { icon: <LogoutIcon />, text: "Log Out", divider: false },
   ];
 
+  const go = useNavigate();
+
+  const {pathname : path} = useLocation();
   return (
     <>
       <AppBar
@@ -106,20 +110,39 @@ export default () => {
                 borderRadius: 2,
                 px: 4,
                 color: theme.palette.primary.main,
-                borderBottom: `3px solid ${theme.palette.primary.main}`,
+                borderBottom: path === '/' ?  `3px solid ${theme.palette.primary.main}` : '',
+ 
               }}
+              onClick={() => go("/")}
             >
               <HomeIcon />
             </IconButton>
-            <IconButton sx={{ borderRadius: 2, px: 4, color: theme.palette.text.secondary }}>
+            <IconButton
+              sx={{
+                borderRadius: 2,
+                px: 4,
+                color: theme.palette.text.secondary,
+                borderBottom: path === '/videos' ?  `3px solid ${theme.palette.primary.main}` : '',
+
+              }}
+              onClick={() => go("/videos")}
+            >
               <VideoIcon />
             </IconButton>
-            <IconButton sx={{ borderRadius: 2, px: 4, color: theme.palette.text.secondary }}>
-              <StoreIcon />
+            <IconButton
+              sx={{
+                borderRadius: 2,
+                px: 4,
+                color: theme.palette.text.secondary,
+                borderBottom: path === '/profile' ?  `3px solid ${theme.palette.primary.main}` : '',
+              }}
+              onClick={() => go("/profile")}
+              
+
+            >
+              <Person />
             </IconButton>
-            <IconButton sx={{ borderRadius: 2, px: 4, color: theme.palette.text.secondary }}>
-              <GroupIcon />
-            </IconButton>
+           
           </Box>
 
           {/* Right Section */}
@@ -201,7 +224,8 @@ export default () => {
                   width: 36,
                   height: 36,
                   borderRadius: "50%",
-                  bgcolor: theme.palette.mode === "light" ? "#E4E6EB" : "#3A3B3C",
+                  bgcolor:
+                    theme.palette.mode === "light" ? "#E4E6EB" : "#3A3B3C",
                 }}
               >
                 {item.icon}

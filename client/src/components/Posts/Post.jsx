@@ -24,11 +24,12 @@ export default  ({ post }) => {
   const theme = useTheme();
 
   return (
-    <Card
+    <Card 
       sx={{
         mb: 2,
         borderRadius: 2,
         bgcolor: theme.palette.background.paper,
+        width:'100% !important' 
       }}
     >
       <CardHeader
