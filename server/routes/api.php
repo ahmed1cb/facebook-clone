@@ -27,7 +27,10 @@ Route::prefix('requests')->middleware('auth.facebook')->controller(RequestsContr
     Route::post('/{userId}/toggle', 'toggleFriendRequest');
 
     Route::post('/{userId}/accept', 'acceptFriendRequest');
+
     Route::post('/{userId}/reject', 'rejectFriendRequest');
+
+
 
 });
 
@@ -45,6 +48,8 @@ Route::prefix('posts')->middleware('auth.facebook')->controller(PostController::
     Route::get('/{postId}', 'getPostDetails');
 
     Route::post('/', 'uploadPost');
+
+    Route::put('/{postId}', 'updatePost');
 
     Route::delete('/{postId}', 'deletePost');
 
