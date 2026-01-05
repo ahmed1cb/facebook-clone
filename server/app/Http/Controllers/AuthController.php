@@ -13,8 +13,16 @@ class AuthController extends Controller
 {
     function getUserDetails()
     {
-
-        $user = request()->user()->load('posts');
+        $userId = request()->user()->id;
+        $user = request()->user()->load([
+            'posts' => function ($q) use ($userId) {
+                return $q->withCount('likes' , 'comments')->with('comments')->withExists([
+                    'likes as isLiked' => function ($q) use ($userId) {
+                        $q->where('user_id', $userId);
+                    }
+                ]);
+            }
+        ]);
 
         return Response::json([
             'user' => $user

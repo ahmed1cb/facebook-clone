@@ -14,8 +14,14 @@ class PostController extends Controller
 {
     public function getPostDetails($postId)
     {
-        # Will Change When Add Reactions And Comments
-        $targetPost = Post::find(($postId));
+        $userId = request()->user()->id;
+        $targetPost = Post::whereId($postId)->with('comments')->withCount('likes' , 'comments')
+            ->withExists([
+                'likes as isLiked' => function ($q) use ($userId) {
+                    return $q->where('user_id', $userId);
+                }
+            ])
+            ->first();
 
 
         if (!$targetPost) {
