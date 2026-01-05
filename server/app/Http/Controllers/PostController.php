@@ -23,13 +23,9 @@ class PostController extends Controller
             ])
             ->first();
 
-
         if (!$targetPost) {
-
             return Response::json([], "Post Not Found", 404);
-
         }
-
 
         return Response::json([
             'post' => $targetPost
