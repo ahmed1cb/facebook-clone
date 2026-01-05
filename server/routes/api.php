@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\FriendsController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
@@ -47,12 +48,26 @@ Route::prefix('posts')->middleware('auth.facebook')->controller(PostController::
 
     Route::get('/{postId}', 'getPostDetails');
 
+    Route::post('/{postId}/like', 'toggeLike');
+
     Route::post('/', 'uploadPost');
 
     Route::put('/{postId}', 'updatePost');
 
     Route::delete('/{postId}', 'deletePost');
 
+});
+
+
+
+
+Route::prefix('comments')->middleware('auth.facebook')->controller(CommentsController::class)->group(function () {
+
+    Route::post('/{postId}', 'commentOnPost');
+
+    Route::delete('/{commentId}', 'deleteComment');
+
 
 });
+
 

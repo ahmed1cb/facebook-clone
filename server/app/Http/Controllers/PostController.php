@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Like;
 use App\Models\Post;
 use App\Services\Response;
 use Illuminate\Support\Facades\Storage;
@@ -221,6 +222,41 @@ class PostController extends Controller
         ], 'Post Updated Successfully', 200);
 
 
+
+    }
+
+    public function toggeLike($postId)
+    {
+
+        $post = Post::whereId($postId)->first();
+        $user = request()->user();
+
+        if (!$post) {
+            return Response::json([], 'Post Not Found', 404);
+        }
+
+
+        $like = $post->likes->where('user_id', $user->id)->first();
+
+
+        if ($like) {
+            $like->delete();
+
+            return Response::json([
+                'is_liked' => false
+            ], 'Like Deleted Successfully', 200);
+
+        }
+
+
+        $like = Like::create([
+            'user_id' => $user->id,
+            'post_id' => $postId
+        ]);
+
+        return Response::json([
+            'is_liked' => true
+        ], 'Post Liked Successfully', 201);
 
     }
 
