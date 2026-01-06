@@ -16,6 +16,7 @@ Route::middleware('throttle.json:30,1')->group(function () {
         Route::middleware('auth.facebook')->group(function () {
 
             Route::get('user', [AuthController::class, 'getUserDetails']);
+            Route::post('logout', [AuthController::class, 'logoutUser']);
             Route::post('user/edit', [ProfileController::class, 'editProfile']);
         });
 

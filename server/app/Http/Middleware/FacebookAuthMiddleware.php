@@ -34,6 +34,9 @@ class FacebookAuthMiddleware
         }
         $user = $accessToken->tokenable;
 
+        $user->withAccessToken($accessToken);
+
+
         $request->setUserResolver(fn() => $user);
 
         return $next($request);
