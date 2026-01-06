@@ -12,6 +12,7 @@ import MainLayout from "./Layouts/MainLayout";
 import Profile from "./components/Profile/Profile";
 import SearchResults from "./components/Search/SearchResults";
 import NotFound from "./components/States/404";
+import Settings from "./components/Settings/Settings";
 function App() {
   const [mode, setMode] = useState(localStorage.mode ?? "light");
 
@@ -23,18 +24,19 @@ function App() {
         <CssBaseline />
         <themeChanger.Provider value={{ mode, setMode }}>
           <Routes>
-            <Route path="/" element={<MainLayout/>}>
+            <Route path="/" element={<MainLayout />}>
               <Route index element={<Home />} />
-              <Route path="videos" element={<Videos/>} />
-              <Route path="profile" element={<Profile/>} />
-              <Route path="search/:query" element={<SearchResults/>} />
+              <Route path="videos" element={<Videos />} />
+              <Route path="profile" element={<Profile />} />
+              <Route path="search/:query" element={<SearchResults />} />
+              <Route path="settings" element={<Settings />} />
             </Route>
 
             <Route path="/auth">
               <Route path="register" element={<Register />} />
               <Route path="login" element={<Login />} />
             </Route>
-            <Route path="*" element={<NotFound/>}/>
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </themeChanger.Provider>
       </ThemeProvider>

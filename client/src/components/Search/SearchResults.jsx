@@ -1,6 +1,5 @@
-import  { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Box, Container, Grid, useTheme } from "@mui/material";
-import SearchFilters from "./SearchFilters";
 import SearchResultsList from "./SearchResultsList";
 import { useParams } from "react-router-dom";
 
@@ -9,9 +8,8 @@ const SearchResults = () => {
   const [activeFilter, setActiveFilter] = useState("all");
   const [results, setResults] = useState([]);
 
-  const {query: searchQuery} = useParams();
+  const { query: searchQuery } = useParams();
 
-  // Mock search results data
   const allResults = {
     people: [
       {
@@ -152,24 +150,6 @@ const SearchResults = () => {
     ],
   };
 
-  const getResultsCount = () => {
-    return {
-      all:
-        allResults.people.length +
-        allResults.posts.length +
-        allResults.photos.length +
-        allResults.groups.length,
-      people: allResults.people.length,
-      posts: allResults.posts.length,
-      photos: allResults.photos.length,
-      groups: allResults.groups.length,
-      videos: 0,
-      pages: 0,
-      events: 0,
-      marketplace: 0,
-    };
-  };
-
   useEffect(() => {
     if (activeFilter === "all") {
       const combined = [
@@ -184,36 +164,32 @@ const SearchResults = () => {
     }
   }, [activeFilter]);
 
-  const handleFilterChange = (filter) => {
-    setActiveFilter(filter);
-  };
-
   return (
     <Box
       sx={{
         bgcolor: theme.palette.background.default,
         minHeight: "100vh",
+        width: "100%",
+
         py: 3,
       }}
     >
       <Container maxWidth="xl">
-        <Grid container spacing={3}>
-          {/* Left Sidebar - Filters */}
+        <Grid
+          container
+          spacing={3}
+          sx={{
+            width: "100%",
+          }}
+        >
           <Grid
             item
             xs={12}
-            md={3}
-            sx={{ display: { xs: "none", md: "block" } }}
+            md={9}
+            sx={{
+              width: "100%",
+            }}
           >
-            <SearchFilters
-              activeFilter={activeFilter}
-              onFilterChange={handleFilterChange}
-              resultsCount={getResultsCount()}
-            />
-          </Grid>
-
-          {/* Main Content - Search Results */}
-          <Grid item xs={12} md={9}>
             <SearchResultsList
               results={results}
               filter={activeFilter}

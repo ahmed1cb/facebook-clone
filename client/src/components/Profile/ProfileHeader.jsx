@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import {
   Box,
   Container,
@@ -7,313 +6,128 @@ import {
   Button,
   IconButton,
   useTheme,
-  Menu,
-  MenuItem,
-  Divider,
 } from "@mui/material";
-import {
-  PhotoCamera as PhotoCameraIcon,
-  Edit as EditIcon,
-  MoreHoriz as MoreHorizIcon,
-  PersonAdd as PersonAddIcon,
-  Message as MessageIcon,
-} from "@mui/icons-material";
+import { Edit, PersonAdd, Message } from "@mui/icons-material";
 
-export default({ user, isOwnProfile = true }) => {
+export default function ProfileHeader({ user, isOwnProfile = true }) {
   const theme = useTheme();
-  const [menuAnchor, setMenuAnchor] = useState(null);
-
-  const handleMenuClick = (event) => {
-    setMenuAnchor(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setMenuAnchor(null);
-  };
 
   return (
-    <Box sx={{ bgcolor: theme.palette.background.paper }}>
+    <Box sx={{ bgcolor: theme.palette.background.default }}>
       {/* Cover Photo */}
-      <Box sx={{ position: "relative" }}>
-        <Box
-          sx={{
-            height: { xs: 200, md: 400 },
-            bgcolor: theme.palette.grey[300],
-            backgroundImage: user.coverPhoto
-              ? `url(${user.coverPhoto})`
-              : "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        />
-        {isOwnProfile && (
-          <Button
-            startIcon={<PhotoCameraIcon />}
-            sx={{
-              position: "absolute",
-              bottom: 16,
-              right: 16,
-              bgcolor: theme.palette.background.paper,
-              color: theme.palette.text.primary,
-              textTransform: "none",
-              fontWeight: 600,
-              "&:hover": {
-                bgcolor: theme.palette.grey[200],
-              },
-            }}
-          >
-            Edit cover photo
-          </Button>
-        )}
-      </Box>
+      <Box
+        sx={{
+          height: { xs: 200, md: 300 },
+          backgroundImage: `url(${user.coverPhoto})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          bgcolor: theme.palette.grey[900],
+        }}
+      />
 
-      {/* Profile Info */}
-      <Container maxWidth="lg">
+      <Container maxWidth="lg" sx={{ py: 3 }}>
+        {/* Main Profile Info */}
         <Box
           sx={{
             display: "flex",
             flexDirection: { xs: "column", md: "row" },
-            alignItems: { xs: "center", md: "flex-end" },
-            gap: 2,
-            pb: 2,
+            gap: 3,
+            alignItems: { xs: "center", md: "flex-start" },
           }}
         >
           {/* Profile Picture */}
-          <Box
-            sx={{
-              position: "relative",
-              mt: { xs: -8, md: -10 },
-            }}
-          >
+          <Box sx={{ mt: { xs: -12, md: -10 }, position: "relative" }}>
             <Avatar
-              src={user.avatar}
               sx={{
-                width: { xs: 150, md: 180 },
-                height: { xs: 150, md: 180 },
-                border: `5px solid ${theme.palette.background.paper}`,
-                fontSize: "4rem",
+                width: { xs: 120, md: 160 },
+                height: { xs: 120, md: 160 },
+                border: `4px solid ${theme.palette.background.default}`,
+                bgcolor: theme.palette.primary.main,
+                color: "white",
+                fontSize: 48,
+                fontWeight: 700,
               }}
             >
-              {user.name[0]}
+              {user.avatar}
             </Avatar>
-            {isOwnProfile && (
-              <IconButton
-                sx={{
-                  position: "absolute",
-                  bottom: 5,
-                  right: 5,
-                  bgcolor: theme.palette.grey[200],
-                  "&:hover": {
-                    bgcolor: theme.palette.grey[300],
-                  },
-                }}
-              >
-                <PhotoCameraIcon />
-              </IconButton>
-            )}
           </Box>
 
-          {/* Name and Stats */}
-          <Box
-            sx={{
-              flex: 1,
-              textAlign: { xs: "center", md: "left" },
-              pt: { xs: 1, md: 2 },
-            }}
-          >
-            <Typography variant="h4" sx={{ fontWeight: 700, mb: 0.5 }}>
+          {/* Info Section */}
+          <Box sx={{ flex: 1, textAlign: { xs: "center", md: "left" } }}>
+            {/* Name */}
+            <Typography
+              variant="h4"
+              sx={{
+                fontWeight: 700,
+                mb: 1,
+                color: theme.palette.text.primary,
+              }}
+            >
               {user.name}
             </Typography>
-            <Typography variant="body1" color="text.secondary" sx={{ mb: 1 }}>
-              {user.friendsCount} friends
-            </Typography>
 
-            {/* Friends Avatars */}
-            <Box
+            {/* Bio */}
+            <Typography
+              variant="body1"
               sx={{
-                display: "flex",
-                justifyContent: { xs: "center", md: "flex-start" },
-                gap: 0.5,
+                color: theme.palette.text.secondary,
+                mb: 2,
               }}
             >
-              {user.mutualFriends?.slice(0, 8).map((friend, index) => (
-                <Avatar
-                  key={index}
-                  src={friend.avatar}
-                  sx={{
-                    width: 32,
-                    height: 32,
-                    border: `2px solid ${theme.palette.background.paper}`,
-                  }}
+              {user.bio}
+            </Typography>
+
+            {/* Stats */}
+            <Box sx={{ display: "flex", gap: 3, mb: 3 }}>
+              <Box>
+                <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                  {user.friendsCount}
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  Friends
+                </Typography>
+              </Box>
+              {user.location && (
+                <Box>
+                  <Typography variant="body2" color="text.secondary">
+                    {user.location}
+                  </Typography>
+                </Box>
+              )}
+            </Box>
+
+            {/* Action Buttons */}
+            <Box sx={{ display: "flex", gap: 2 }}>
+              {isOwnProfile ? (
+                <Button
+                  variant="contained"
+                  startIcon={<Edit />}
+                  sx={{ textTransform: "none", fontWeight: 600 }}
                 >
-                  {friend.name[0]}
-                </Avatar>
-              ))}
+                  Edit Profile
+                </Button>
+              ) : (
+                <>
+                  <Button
+                    variant="contained"
+                    startIcon={<PersonAdd />}
+                    sx={{ textTransform: "none", fontWeight: 600 }}
+                  >
+                    Add Friend
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    startIcon={<Message />}
+                    sx={{ textTransform: "none", fontWeight: 600 }}
+                  >
+                    Message
+                  </Button>
+                </>
+              )}
             </Box>
           </Box>
-
-          {/* Action Buttons */}
-          <Box
-            sx={{
-              display: "flex",
-              gap: 1,
-              pt: { xs: 1, md: 2 },
-            }}
-          >
-            {isOwnProfile ? (
-              <>
-                <Button
-                  startIcon={<EditIcon />}
-                  variant="contained"
-                  sx={{
-                    textTransform: "none",
-                    fontWeight: 600,
-                    bgcolor: theme.palette.primary.main,
-                  }}
-                >
-                  Edit profile
-                </Button>
-                <IconButton
-                  onClick={handleMenuClick}
-                  sx={{
-                    bgcolor: theme.palette.grey[200],
-                  }}
-                >
-                  <MoreHorizIcon />
-                </IconButton>
-              </>
-            ) : (
-              <>
-                <Button
-                  startIcon={<PersonAddIcon />}
-                  variant="contained"
-                  sx={{
-                    textTransform: "none",
-                    fontWeight: 600,
-                    bgcolor: theme.palette.primary.main,
-                  }}
-                >
-                  Add Friend
-                </Button>
-                <Button
-                  startIcon={<MessageIcon />}
-                  variant="contained"
-                  sx={{
-                    textTransform: "none",
-                    fontWeight: 600,
-                    bgcolor: theme.palette.grey[200],
-                    color: theme.palette.text.primary,
-                  }}
-                >
-                  Message
-                </Button>
-                <IconButton
-                  onClick={handleMenuClick}
-                  sx={{
-                    bgcolor: theme.palette.grey[200],
-                  }}
-                >
-                  <MoreHorizIcon />
-                </IconButton>
-              </>
-            )}
-          </Box>
-        </Box>
-
-        {/* Menu */}
-        <Menu
-          anchorEl={menuAnchor}
-          open={Boolean(menuAnchor)}
-          onClose={handleMenuClose}
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "right",
-          }}
-          transformOrigin={{
-            vertical: "top",
-            horizontal: "right",
-          }}
-        >
-          <MenuItem onClick={handleMenuClose}>View as</MenuItem>
-          <MenuItem onClick={handleMenuClose}>Search profile</MenuItem>
-          <Divider />
-          <MenuItem onClick={handleMenuClose}>Settings</MenuItem>
-        </Menu>
-
-        {/* Navigation Tabs */}
-        <Divider sx={{ mt: 2 }} />
-        <Box
-          sx={{
-            display: "flex",
-            gap: 2,
-            overflowX: "auto",
-            "&::-webkit-scrollbar": { display: "none" },
-          }}
-        >
-          <Button
-            sx={{
-              textTransform: "none",
-              fontWeight: 600,
-              color: theme.palette.primary.main,
-              borderBottom: `3px solid ${theme.palette.primary.main}`,
-              borderRadius: 0,
-              py: 2,
-            }}
-          >
-            Posts
-          </Button>
-          <Button
-            sx={{
-              textTransform: "none",
-              fontWeight: 600,
-              color: theme.palette.text.secondary,
-              py: 2,
-            }}
-          >
-            About
-          </Button>
-          <Button
-            sx={{
-              textTransform: "none",
-              fontWeight: 600,
-              color: theme.palette.text.secondary,
-              py: 2,
-            }}
-          >
-            Friends
-          </Button>
-          <Button
-            sx={{
-              textTransform: "none",
-              fontWeight: 600,
-              color: theme.palette.text.secondary,
-              py: 2,
-            }}
-          >
-            Photos
-          </Button>
-          <Button
-            sx={{
-              textTransform: "none",
-              fontWeight: 600,
-              color: theme.palette.text.secondary,
-              py: 2,
-            }}
-          >
-            Videos
-          </Button>
-          <Button
-            sx={{
-              textTransform: "none",
-              fontWeight: 600,
-              color: theme.palette.text.secondary,
-              py: 2,
-            }}
-          >
-            More
-          </Button>
         </Box>
       </Container>
     </Box>
   );
-};
+}

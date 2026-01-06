@@ -7,7 +7,6 @@ import {
   Avatar,
   Typography,
   Box,
-  Badge,
   Menu,
   MenuItem,
   Divider,
@@ -17,16 +16,11 @@ import {
   Search as SearchIcon,
   Home as HomeIcon,
   OndemandVideo as VideoIcon,
-  Group as GroupIcon,
-  Notifications as NotificationsIcon,
   Menu as MenuIcon,
-  ChatBubble as ChatIcon,
   Settings as SettingsIcon,
-  HelpOutline as HelpIcon,
-  Feedback as FeedbackIcon,
   Logout as LogoutIcon,
-  DarkMode as DarkModeIcon,
   Person,
+  Settings,
 } from "@mui/icons-material";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -44,16 +38,23 @@ export default () => {
   };
 
   const menuItems = [
-    { icon: <SettingsIcon />, text: "Settings & Privacy", divider: false },
-    { icon: <HelpIcon />, text: "Help & Support", divider: false },
-    { icon: <DarkModeIcon />, text: "Display & Accessibility", divider: false },
-    { icon: <FeedbackIcon />, text: "Give Feedback", divider: true },
-    { icon: <LogoutIcon />, text: "Log Out", divider: false },
+    {
+      icon: <SettingsIcon />,
+      text: "Settings",
+      divider: false,
+      event: () => go("/settings"),
+    },
+    {
+      icon: <LogoutIcon />,
+      text: "Log Out",
+      divider: false,
+      event: () => go("/logout"),
+    },
   ];
 
   const go = useNavigate();
 
-  const {pathname : path} = useLocation();
+  const { pathname: path } = useLocation();
   return (
     <>
       <AppBar
@@ -89,7 +90,7 @@ export default () => {
               }}
             >
               <SearchIcon sx={{ color: theme.palette.text.secondary, mr: 1 }} />
-              
+
               <InputBase
                 placeholder="Search Facebook"
                 sx={{
@@ -100,10 +101,12 @@ export default () => {
                     opacity: 1,
                   },
                 }}
-
-                onKeyDown={(e) => {if (e.key === 'Enter' && e.target.value.trim()) {go(`/search/${e.target.value}`)}}}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && e.target.value.trim()) {
+                    go(`/search/${e.target.value}`);
+                  }
+                }}
               />
-
             </Box>
           </Box>
 
@@ -113,9 +116,9 @@ export default () => {
               sx={{
                 borderRadius: 2,
                 px: 4,
-                color: theme.palette.primary.main,
-                borderBottom: path === '/' ?  `3px solid ${theme.palette.primary.main}` : '',
- 
+                color: theme.palette.text.secondary,
+                borderBottom:
+                  path === "/" ? `3px solid ${theme.palette.primary.main}` : "",
               }}
               onClick={() => go("/")}
             >
@@ -126,8 +129,10 @@ export default () => {
                 borderRadius: 2,
                 px: 4,
                 color: theme.palette.text.secondary,
-                borderBottom: path === '/videos' ?  `3px solid ${theme.palette.primary.main}` : '',
-
+                borderBottom:
+                  path === "/videos"
+                    ? `3px solid ${theme.palette.primary.main}`
+                    : "",
               }}
               onClick={() => go("/videos")}
             >
@@ -138,15 +143,29 @@ export default () => {
                 borderRadius: 2,
                 px: 4,
                 color: theme.palette.text.secondary,
-                borderBottom: path === '/profile' ?  `3px solid ${theme.palette.primary.main}` : '',
+                borderBottom:
+                  path === "/profile"
+                    ? `3px solid ${theme.palette.primary.main}`
+                    : "",
               }}
               onClick={() => go("/profile")}
-              
-
             >
               <Person />
             </IconButton>
-           
+            <IconButton
+              sx={{
+                borderRadius: 2,
+                px: 4,
+                color: theme.palette.text.secondary,
+                borderBottom:
+                  path === "/settings"
+                    ? `3px solid ${theme.palette.primary.main}`
+                    : "",
+              }}
+              onClick={() => go("/settings")}
+            >
+              <Settings />
+            </IconButton>
           </Box>
 
           {/* Right Section */}
@@ -159,25 +178,13 @@ export default () => {
             >
               <MenuIcon />
             </IconButton>
-            <IconButton
-              sx={{
-                bgcolor: theme.palette.mode === "light" ? "#E4E6EB" : "#3A3B3C",
-              }}
+
+            <Avatar
+              onClick={() => go("/profile")}
+              sx={{ width: 32, height: 32, cursor: "pointer" }}
             >
-              <Badge badgeContent={3} color="error">
-                <ChatIcon />
-              </Badge>
-            </IconButton>
-            <IconButton
-              sx={{
-                bgcolor: theme.palette.mode === "light" ? "#E4E6EB" : "#3A3B3C",
-              }}
-            >
-              <Badge badgeContent={5} color="error">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
-            <Avatar sx={{ width: 32, height: 32, cursor: "pointer" }}>U</Avatar>
+              U
+            </Avatar>
           </Box>
         </Toolbar>
       </AppBar>
@@ -213,7 +220,10 @@ export default () => {
         {menuItems.map((item, index) => (
           <Box key={index}>
             <MenuItem
-              onClick={handleMenuClose}
+              onClick={() => {
+                handleMenuClose();
+                item.event();
+              }}
               sx={{
                 py: 1.5,
                 px: 2,

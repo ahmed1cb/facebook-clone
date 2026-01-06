@@ -10,14 +10,7 @@ import {
 export default  () => {
   const shortcuts = [
     { name: "Friends", icon: "👥" },
-    { name: "Groups", icon: "👨‍👩‍👧‍👦" },
-    { name: "Marketplace", icon: "🛒" },
     { name: "Watch", icon: "📺" },
-    { name: "Memories", icon: "⏰" },
-    { name: "Saved", icon: "🔖" },
-    { name: "Pages", icon: "📄" },
-    { name: "Events", icon: "📅" },
-    { name: "Gaming", icon: "🎮" },
   ];
 
   return (
