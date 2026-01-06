@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentsController;
+use App\Http\Controllers\DataController;
 use App\Http\Controllers\FriendsController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
@@ -71,6 +72,13 @@ Route::middleware('throttle.json:30,1')->group(function () {
 
 
     });
+
+
+
+    Route::get('/search/{query}', [DataController::class, 'search'])->middleware('auth.facebook');
+
+
+
 
 });
 
