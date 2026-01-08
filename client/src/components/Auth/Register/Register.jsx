@@ -13,24 +13,53 @@ import {
   useTheme,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { registerSchema } from "../../../App/Validations/Auth";
+import { register } from "../../../App/services/authServices";
 
 const Register = () => {
   const theme = useTheme();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [data, setData] = useState({
+    email: "",
+    password: "",
+    name: "",
+    password_confirmation: "",
+  });
+
   const [error, setError] = useState("");
+
   const go = useNavigate();
-  const handleRegister = (e) => {
+
+  const handleRegister = async (e) => {
     e.preventDefault();
+    setIsLoading(() => true);
     setError("");
 
-    if (!email || !password) {
-      setError("Please fill in all fields");
-      return;
-    }
+    let check = registerSchema.safeParse(data);
 
-    setIsLoading(true);
+    if (!check.success) {
+      setError(JSON.parse(check.error)[0].message);
+      setIsLoading(() => false);
+    } else {
+      setError("");
+
+      let response = await register(data);
+
+      if (response.message !== "Success") {
+        if (response.code == 500) {
+          setError(() => "Something Went Wrong Try Again Later");
+        } else {
+          setError(
+            () => "Invalid Register Data or User With details Already Exists"
+          );
+        }
+      } else {
+        if (response.code === 201) {
+          go("/auth/login");
+        }
+      }
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -90,10 +119,27 @@ const Register = () => {
 
                 <TextField
                   fullWidth
+                  type="text"
+                  placeholder="Full Name"
+                  value={data.name}
+                  onChange={(e) => setData({ ...data, name: e.target.value })}
+                  sx={{
+                    mb: 1.5,
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: 1.5,
+                      fontSize: "1.0625rem",
+                      height: 52,
+                    },
+                  }}
+                  disabled={isLoading}
+                />
+
+                <TextField
+                  fullWidth
                   type="email"
                   placeholder="Email address"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={data.email}
+                  onChange={(e) => setData({ ...data, email: e.target.value })}
                   sx={{
                     mb: 1.5,
                     "& .MuiOutlinedInput-root": {
@@ -109,8 +155,29 @@ const Register = () => {
                   fullWidth
                   type="password"
                   placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  value={data.password}
+                  onChange={(e) =>
+                    setData({ ...data, password: e.target.value })
+                  }
+                  sx={{
+                    mb: 2,
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: 1.5,
+                      fontSize: "1.0625rem",
+                      height: 52,
+                    },
+                  }}
+                  disabled={isLoading}
+                />
+
+                <TextField
+                  fullWidth
+                  type="password"
+                  placeholder="Confirm Password"
+                  value={data.password_confirmation}
+                  onChange={(e) =>
+                    setData({ ...data, password_confirmation: e.target.value })
+                  }
                   sx={{
                     mb: 2,
                     "& .MuiOutlinedInput-root": {
