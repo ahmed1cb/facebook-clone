@@ -42,7 +42,7 @@ const Home = () => {
         width: "100%",
       }}
     >
-      <Container maxWidth="lg" sx={{ px: { xs: 0, sm: 1, md: 2 } }}>
+      <Container maxWidth="lg">
         <Grid container spacing={2}>
           {/* Left Sidebar - Hidden on mobile & tablet */}
           <Grid
@@ -60,7 +60,7 @@ const Home = () => {
             xs={12}
             lg={6}
             sx={{
-              width: {md: "100%" , lg:'auto'},
+              width: {sm: "100%" , lg:'auto'},
             }}
           >
             <Box sx={{ mb: 2 }}>

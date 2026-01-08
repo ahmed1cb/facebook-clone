@@ -13,24 +13,46 @@ import {
   useTheme,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { loginSchema } from "../../../App/Validations/Auth";
+import { login } from "../../../App/services/authServices";
+import Cookie from "../../../App/Cookie/Cookie";
 
 const Login = () => {
   const theme = useTheme();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const go = useNavigate();
+
+  const [data, setData] = useState({
+    email: "",
+    password: "",
+  });
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const go = useNavigate()
-  const handleLogin = (e) => {
+
+  const handleLogin = async (e) => {
     e.preventDefault();
-    setError("");
+    const check = loginSchema.safeParse(data);
+    setIsLoading(() => true);
+    if (!check.success) {
+      setError(() => JSON.parse(check.error)[0].message);
+      setIsLoading(() => false);
+    } else {
+      const response = await login(data);
 
-    if (!email || !password) {
-      setError("Please fill in all fields");
-      return;
+      if (response.code === 200) {
+        let token = response.data.data.token;
+        Cookie.set("authorization", `Bearer ${token}`, 3);
+        go("/");
+      } else {
+        if (response.code == 500) {
+          setError("Something Went Wrong Try Again Later");
+          return;
+        }
+        setError("Invalid Data or User Not exists");
+      }
+
+      setIsLoading(() => false);
     }
-
-    setIsLoading(true);
   };
 
   return (
@@ -72,6 +94,7 @@ const Login = () => {
             </Box>
           </Grid>
 
+          {/* Right Side */}
           <Grid item xs={12} md={6}>
             <Paper
               elevation={3}
@@ -91,9 +114,12 @@ const Login = () => {
                 <TextField
                   fullWidth
                   type="email"
+                  name="email"
                   placeholder="Email address"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={data.email}
+                  onChange={(e) =>
+                    setData((prev) => ({ ...prev, email: e.target.value }))
+                  }
                   sx={{
                     mb: 1.5,
                     "& .MuiOutlinedInput-root": {
@@ -108,9 +134,12 @@ const Login = () => {
                 <TextField
                   fullWidth
                   type="password"
+                  name="password"
                   placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  value={data.password}
+                  onChange={(e) =>
+                    setData((prev) => ({ ...prev, password: e.target.value }))
+                  }
                   sx={{
                     mb: 2,
                     "& .MuiOutlinedInput-root": {
@@ -146,7 +175,8 @@ const Login = () => {
                 <Divider sx={{ mb: 3, borderColor: theme.palette.divider }} />
 
                 <Box sx={{ textAlign: "center" }}>
-                  <Button onClick={() => go('/auth/register')}
+                  <Button
+                    onClick={() => go("/auth/register")}
                     variant="contained"
                     color="secondary"
                     sx={{

@@ -10,14 +10,36 @@ const register = async (data) => {
             code: response.status
         }
     } catch (error) {
-        console.log(error)
         return {
             data: {},
             message: 'Fail',
-            code: error ?? 500
+            code: error?.status ?? 500,
+            error: error
+
         }
     }
 }
 
 
-export { register }
+
+const login = async (data) => {
+
+    try {
+        const response = await api.post('/auth/login', data);
+        return {
+            data: response.data,
+            message: "Success",
+            code: response.status
+        }
+    } catch (error) {
+        return {
+            data: {},
+            message: 'Fail',
+            code: error?.status ?? 500,
+            error: error
+        }
+    }
+}
+
+
+export { register, login }

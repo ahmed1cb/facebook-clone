@@ -12,4 +12,9 @@ const registerSchema = z.object({
 })
 
 
-export { registerSchema };
+const loginSchema = z.object({
+    email: z.string().email().max(255),
+    password: z.string().min(6).max(12, "Max Password Length is 12"),
+})
+
+export { registerSchema, loginSchema };
