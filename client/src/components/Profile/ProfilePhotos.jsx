@@ -1,7 +1,11 @@
-import { Box, Paper, Typography, Grid, useTheme, Button  } from "@mui/material";
+import { Box, Paper, Typography, Grid, useTheme, Button } from "@mui/material";
 
-export default ({ photos }) => {
+export default ({ user }) => {
   const theme = useTheme();
+  let photos = user.posts.filter((p) => p.type === "IMG");
+
+
+
   return (
     <Paper
       sx={{
@@ -51,7 +55,8 @@ export default ({ photos }) => {
               }}
             />
           </Grid>
-        ))}
+        )) }
+        {photos.length === 0 && 'No Shared Photos Yet'}
       </Grid>
     </Paper>
   );

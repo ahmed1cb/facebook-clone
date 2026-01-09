@@ -5,30 +5,33 @@ import ProfilePhotos from "./ProfilePhotos";
 import ProfileFriends from "./ProfileFriends";
 import CreatePost from "../Posts/CreatePost";
 import Posts from "../Posts/Posts";
+import { useSelector } from "react-redux";
 
 const Profile = () => {
   const theme = useTheme();
 
-  const user = {
-    name: "Ahmed Hassan",
-    avatar: "AH",
-    coverPhoto: "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=1200",
-    friendsCount: 542,
-    bio: "Software Developer | Tech Enthusiast",
-    work: "Tech Company Inc.",
-    education: "University of Technology",
-    location: "New York, NY",
-    hometown: "Cairo, Egypt",
-    joinedDate: "January 2020",
-  };
+  // const user = {
+  //   name: "Ahmed Hassan",
+  //   avatar: "AH",
+  //   coverPhoto: "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=1200",
+  //   friendsCount: 542,
+  //   bio: "Software Developer | Tech Enthusiast",
+  //   work: "Tech Company Inc.",
+  //   education: "University of Technology",
+  //   location: "New York, NY",
+  //   hometown: "Cairo, Egypt",
+  //   joinedDate: "January 2020",
+  // };
+
+  
+  const user = useSelector((s) => s.auth.user);
 
   const photos = [
     "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400",
     "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400",
     "https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=400",
-    "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=400",
-    "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400",
-  ];
+    "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=400" 
+   ];
 
   const friends = [
     { name: "John Doe", avatar: "JD" },
@@ -62,6 +65,7 @@ const Profile = () => {
       shares: 12,
     },
   ];
+  
 
   return (
     <Box sx={{ 
@@ -81,7 +85,8 @@ const Profile = () => {
               top: 20
             }}>
               <ProfileIntro user={user} />
-              <ProfilePhotos photos={photos} />
+              <ProfilePhotos  user={user} />
+              
               <ProfileFriends friends={friends} />
             </Box>
           </Grid>

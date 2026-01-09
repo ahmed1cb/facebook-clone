@@ -6,22 +6,32 @@ import {
   ListItemText,
   Avatar,
 } from "@mui/material";
+import { useSelector } from "react-redux";
+import api from "../../App/services/api";
 
-export default  () => {
+export default () => {
   const shortcuts = [
     { name: "Friends", icon: "👥" },
     { name: "Watch", icon: "📺" },
   ];
 
+  const user = useSelector((s) => s.auth.user);
+
+  let profileImage = user.photo ? (
+    <Avatar
+      src={`${api.getUri()}/../storage/app/public/${user.photo}`}
+    ></Avatar>
+  ) : (
+    <Avatar>{user.name[0]}</Avatar>
+  );
+
   return (
     <Box sx={{ position: "sticky", top: 72 }}>
       <List>
         <ListItemButton sx={{ borderRadius: 2, mb: 0.5 }}>
-          <ListItemAvatar>
-            <Avatar>U</Avatar>
-          </ListItemAvatar>
+          <ListItemAvatar>{profileImage}</ListItemAvatar>
           <ListItemText
-            primary="Your Name"
+            primary={user.name}
             primaryTypographyProps={{ fontWeight: 600 }}
           />
         </ListItemButton>

@@ -8,9 +8,41 @@ import {
   useTheme,
 } from "@mui/material";
 import { Edit, PersonAdd, Message } from "@mui/icons-material";
+import api from "../../App/services/api";
 
 export default function ProfileHeader({ user, isOwnProfile = true }) {
   const theme = useTheme();
+
+  let profileImage = user.photo ? (
+    <Avatar
+      sx={{
+        width: { xs: 120, md: 160 },
+        height: { xs: 120, md: 160 },
+        border: `4px solid ${theme.palette.background.default}`,
+        bgcolor: theme.palette.primary.main,
+        color: "white",
+        fontSize: 48,
+        fontWeight: 700,
+      }}
+      src={`${api.getUri()}/../storage/app/public/${user.photo}`}
+    ></Avatar>
+  ) : (
+    <Avatar
+      sx={{
+        width: { xs: 120, md: 160 },
+        height: { xs: 120, md: 160 },
+        border: `4px solid ${theme.palette.background.default}`,
+        bgcolor: theme.palette.primary.main,
+        color: "white",
+        fontSize: 48,
+        fontWeight: 700,
+      }}
+    >
+      {user.name.slice(0, 2).toUpperCase()}
+    </Avatar>
+  );
+
+  console.log(user);
 
   return (
     <Box sx={{ bgcolor: theme.palette.background.default }}>
@@ -18,7 +50,9 @@ export default function ProfileHeader({ user, isOwnProfile = true }) {
       <Box
         sx={{
           height: { xs: 200, md: 300 },
-          backgroundImage: `url(${user.coverPhoto})`,
+          backgroundImage: user?.coverPhoto
+            ? `url(${api.getUri()}/storage/${user.coverPhoto})`
+            : "linear-gradient(to left , white , black)",
           backgroundSize: "cover",
           backgroundPosition: "center",
           bgcolor: theme.palette.grey[900],
@@ -37,19 +71,7 @@ export default function ProfileHeader({ user, isOwnProfile = true }) {
         >
           {/* Profile Picture */}
           <Box sx={{ mt: { xs: -12, md: -10 }, position: "relative" }}>
-            <Avatar
-              sx={{
-                width: { xs: 120, md: 160 },
-                height: { xs: 120, md: 160 },
-                border: `4px solid ${theme.palette.background.default}`,
-                bgcolor: theme.palette.primary.main,
-                color: "white",
-                fontSize: 48,
-                fontWeight: 700,
-              }}
-            >
-              {user.avatar}
-            </Avatar>
+            {profileImage}
           </Box>
 
           {/* Info Section */}
@@ -75,25 +97,28 @@ export default function ProfileHeader({ user, isOwnProfile = true }) {
               }}
             >
               {user.bio}
+              {/* @TODO ADD TO BACKEND */}
             </Typography>
 
             {/* Stats */}
             <Box sx={{ display: "flex", gap: 3, mb: 3 }}>
               <Box>
                 <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                  {user.friendsCount}
+                  {user.friends}
+                  {/* TODO RETURN FRIENDS WITH USER */}
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
                   Friends
                 </Typography>
               </Box>
-              {user.location && (
+              {( (
                 <Box>
                   <Typography variant="body2" color="text.secondary">
-                    {user.location}
+                    {user.location ?? "Loaction Not Shared"}
                   </Typography>
                 </Box>
-              )}
+              )) 
+                }
             </Box>
 
             {/* Action Buttons */}

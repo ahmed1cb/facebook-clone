@@ -3,18 +3,40 @@ import { Outlet, useNavigate } from "react-router-dom";
 import Header from "../components/Header/Header";
 import Cookie from "../App/Cookie/Cookie";
 import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getAuthorizedUser } from "../App/Redux/Features/Auth/Services";
+import Loader from "../components/Loader/Loader";
 
 export default () => {
   const go = useNavigate();
-  const isAuthorizedUser = Cookie.exists("authorization");
+  const token = Cookie.get("authorization");
+  const { user, state } = useSelector((s) => s.auth);
+  const dispatch = useDispatch();
   useEffect(() => {
-    if (!isAuthorizedUser) {
+    if (!token) {
       go("/auth/register");
+      return;
     }
   }, []);
 
+  useEffect(() => {
+    if (!user) {
+      dispatch(getAuthorizedUser(token));
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (state === "Fail") {
+      Cookie.remove("authorization");
+      go("/auth/login");
+    }
+    if (state === "Error") {
+      alert("Something Went Wrong Try Again Later");
+    }
+  }, [state]);
+
   return (
-    isAuthorizedUser && (
+    (user && (
       <Box
         sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
       >
@@ -23,6 +45,7 @@ export default () => {
           <Outlet />
         </Box>
       </Box>
-    )
+    )) ||
+    (state == "Loading" && <Loader />)
   );
 };

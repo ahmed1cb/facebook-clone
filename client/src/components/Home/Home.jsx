@@ -33,6 +33,8 @@ const Home = () => {
     },
   ];
 
+
+
   return (
     <Box
       sx={{
@@ -60,7 +62,7 @@ const Home = () => {
             xs={12}
             lg={6}
             sx={{
-              width: {sm: "100%" , lg:'auto'},
+              width: { sm: "100%", lg: "auto" },
             }}
           >
             <Box sx={{ mb: 2 }}>

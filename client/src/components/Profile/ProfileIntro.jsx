@@ -18,7 +18,7 @@ import {
   Schedule as ScheduleIcon,
 } from "@mui/icons-material";
 
-export default({ user, isOwnProfile = true }) => {
+export default ({ user, isOwnProfile = true }) => {
   const theme = useTheme();
 
   return (
@@ -33,107 +33,53 @@ export default({ user, isOwnProfile = true }) => {
         Intro
       </Typography>
 
-      {user.bio && (
+      {
         <Typography
           variant="body2"
           color="text.secondary"
           sx={{ mb: 2, textAlign: "center" }}
         >
-          {user.bio}
+          {user.bio || "No Bio"}
+          {/* @TODO ADD BIO */}
         </Typography>
-      )}
-
-      {isOwnProfile && !user.bio && (
-        <Button
-          fullWidth
-          variant="contained"
-          sx={{
-            mb: 2,
-            bgcolor: theme.palette.grey[200],
-            color: theme.palette.text.primary,
-            textTransform: "none",
-            fontWeight: 600,
-            "&:hover": {
-              bgcolor: theme.palette.grey[300],
-            },
-          }}
-        >
-          Add bio
-        </Button>
-      )}
+      }
 
       <List>
-        {user.work && (
+        {
           <ListItem sx={{ px: 0 }}>
             <ListItemIcon sx={{ minWidth: 40 }}>
               <WorkIcon />
             </ListItemIcon>
             <ListItemText
-              primary={`Works at ${user.work}`}
+              primary={`Location: ${user.location || "Not Shared"}`}
               primaryTypographyProps={{ variant: "body2" }}
             />
           </ListItem>
-        )}
+        }
 
-        {user.education && (
+        {
           <ListItem sx={{ px: 0 }}>
             <ListItemIcon sx={{ minWidth: 40 }}>
               <SchoolIcon />
             </ListItemIcon>
             <ListItemText
-              primary={`Studied at ${user.education}`}
+              primary={`State ${user.state || "Not Shared"}`}
               primaryTypographyProps={{ variant: "body2" }}
             />
           </ListItem>
-        )}
+        }
 
-        {user.location && (
-          <ListItem sx={{ px: 0 }}>
-            <ListItemIcon sx={{ minWidth: 40 }}>
-              <HomeIcon />
-            </ListItemIcon>
-            <ListItemText
-              primary={`Lives in ${user.location}`}
-              primaryTypographyProps={{ variant: "body2" }}
-            />
-          </ListItem>
-        )}
-
-        {user.hometown && (
-          <ListItem sx={{ px: 0 }}>
-            <ListItemIcon sx={{ minWidth: 40 }}>
-              <LocationIcon />
-            </ListItemIcon>
-            <ListItemText
-              primary={`From ${user.hometown}`}
-              primaryTypographyProps={{ variant: "body2" }}
-            />
-          </ListItem>
-        )}
-
-        {user.relationship && (
-          <ListItem sx={{ px: 0 }}>
-            <ListItemIcon sx={{ minWidth: 40 }}>
-              <FavoriteIcon />
-            </ListItemIcon>
-            <ListItemText
-              primary={user.relationship}
-              primaryTypographyProps={{ variant: "body2" }}
-            />
-          </ListItem>
-        )}
-
-        {user.joinedDate && (
+        {
           <ListItem sx={{ px: 0 }}>
             <ListItemIcon sx={{ minWidth: 40 }}>
               <ScheduleIcon />
             </ListItemIcon>
             <ListItemText
-              primary={`Joined ${user.joinedDate}`}
+              primary={`Joined At: ${user.joined_at || user.created_at.slice(0,user.created_at.indexOf('T') )}`}
               primaryTypographyProps={{ variant: "body2" }}
             />
           </ListItem>
-        )}
+        }
       </List>
 
       {isOwnProfile && (
