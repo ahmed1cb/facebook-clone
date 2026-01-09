@@ -22,6 +22,8 @@ class AuthController extends Controller
                     }
                 ]);
             }
+            ,
+            'friends.friend'
         ]);
 
         return Response::json([
