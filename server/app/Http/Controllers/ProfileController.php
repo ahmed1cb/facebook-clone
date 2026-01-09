@@ -13,7 +13,7 @@ class ProfileController extends Controller
 
         $user = request()->user();
 
-        $dataToEdit = ['name', 'location', 'state'];
+        $dataToEdit = ['name', 'location', 'state', 'bio'];
         $files = ['photo', 'cover'];
 
 
@@ -25,7 +25,8 @@ class ProfileController extends Controller
             'location' => ['nullable', 'string', 'max:255', 'min:3'],
             'state' => ['nullable', 'string', 'max:255', 'min:3'],
             'photo' => ['max:20480', 'image', 'mimes:jpg,png,jpeg,gif,svg'],
-            'cover' => ['max:20480', 'image', 'mimes:jpg,png,jpeg,gif,svg']
+            'cover' => ['max:20480', 'image', 'mimes:jpg,png,jpeg,gif,svg'],
+            'bio' => ['max:255', 'min:3'],
         ]);
 
 
