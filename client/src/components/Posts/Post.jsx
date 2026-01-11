@@ -15,15 +15,20 @@ import {
 import {
   ThumbUp as ThumbUpIcon,
   ChatBubbleOutline as CommentIcon,
-  Share as ShareIcon,
   Public as PublicIcon,
   MoreHoriz as MoreHorizIcon,
 } from "@mui/icons-material";
 import { useSelector } from "react-redux";
+import api from "../../App/services/api";
+
 
 export default ({ post }) => {
   const theme = useTheme();
-  let user = useSelector((s) => s.auth.user);
+
+  let user = post.user;
+
+   user = user ??  useSelector((s) => s.auth.user);
+
   let profileImage = user.photo ? (
     <Avatar
       src={`${api.getUri()}/../storage/app/public/${user.photo}`}
@@ -34,7 +39,7 @@ export default ({ post }) => {
 
   let mediaPath =
     post.post_type == "IMG" || post.post_type == "VID"
-      ? `${api.getUri()}/../storage/app/public/${post.post_content}`
+      ? `${api.getUri()}/../storage/${post.post_content}`
       : "";
 
   return (
