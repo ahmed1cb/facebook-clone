@@ -15,21 +15,9 @@ import {
   Search as SearchIcon,
   MoreHoriz as MoreHorizIcon,
 } from "@mui/icons-material";
+import api from "../../App/services/api";
 
-export default  () => {
-  const theme = useTheme();
-
-  const contacts = [
-    { name: "John Doe", avatar: "JD", online: true },
-    { name: "Sarah Smith", avatar: "SS", online: true },
-    { name: "Mike Johnson", avatar: "MJ", online: false },
-    { name: "Emma Wilson", avatar: "EW", online: true },
-    { name: "David Brown", avatar: "DB", online: false },
-    { name: "Lisa Anderson", avatar: "LA", online: true },
-    { name: "Tom Harris", avatar: "TH", online: false },
-    { name: "Amy Martinez", avatar: "AM", online: true },
-  ];
-
+export default ({ contacts }) => {
   return (
     <Box sx={{ position: "sticky", top: 72 }}>
       <Divider sx={{ my: 2 }} />
@@ -60,32 +48,45 @@ export default  () => {
         </Box>
       </Box>
       <List>
-        {contacts.map((contact, index) => (
-          <ListItemButton key={index} sx={{ borderRadius: 2, mb: 0.5 }}>
-            <ListItemAvatar>
-              <Badge
-                overlap="circular"
-                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                variant="dot"
-                sx={{
-                  "& .MuiBadge-badge": {
-                    bgcolor: contact.online ? "#31A24C" : "transparent",
-                    border: `2px solid ${theme.palette.background.paper}`,
-                    width: 12,
-                    height: 12,
-                    borderRadius: "50%",
-                  },
-                }}
-              >
-                <Avatar sx={{ width: 36, height: 36 }}>{contact.avatar}</Avatar>
-              </Badge>
-            </ListItemAvatar>
-            <ListItemText
-              primary={contact.name}
-              primaryTypographyProps={{ fontWeight: 500 }}
-            />
-          </ListItemButton>
-        ))}
+        {contacts.map((contact, index) => {
+          contact = contact.friend;
+          const contactAvatar = contact.photo ? (
+            <Avatar sx={{ width: 36, height: 36 }}>
+              {`${api.getUri()}/../sorage/app/public/${contact.photo}`}
+            </Avatar>
+          ) : (
+            <Avatar sx={{ width: 36, height: 36 }}>
+              {contact.name.slice(0, 2).toUpperCase()}
+            </Avatar>
+          );
+          return (
+            <ListItemButton key={index} sx={{ borderRadius: 2, mb: 0.5 }}>
+              <ListItemAvatar>
+                <Badge
+                  overlap="circular"
+                  anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                  variant="dot"
+                >
+                  {contactAvatar}
+                </Badge>
+              </ListItemAvatar>
+              <ListItemText
+                primary={contact.name}
+                primaryTypographyProps={{ fontWeight: 500 }}
+              />
+            </ListItemButton>
+          );
+        })}
+
+        {contacts.length === 0 && (
+          <Typography
+            variant="h5"
+            color="gray"
+            sx={{ textAlign: "center", margin: "auto" }}
+          >
+            No Contacts Yet
+          </Typography>
+        )}
       </List>
     </Box>
   );

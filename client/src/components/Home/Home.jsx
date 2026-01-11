@@ -4,10 +4,12 @@ import Stories from "../Story/Stories";
 import CreatePost from "../Posts/CreatePost";
 import Posts from "../Posts/Posts";
 import Contacts from "../Contacts/Contacts";
+import { useSelector } from "react-redux";
 
 const Home = () => {
   const theme = useTheme();
-
+  const user = useSelector(s => s.auth.user);
+  let friends = user.friends;
   const posts = [
     {
       id: 1,
@@ -85,7 +87,7 @@ const Home = () => {
             lg={3}
             sx={{ display: { xs: "none", lg: "block" } }}
           >
-            <Contacts />
+            <Contacts contacts={friends} />
           </Grid>
         </Grid>
       </Container>
