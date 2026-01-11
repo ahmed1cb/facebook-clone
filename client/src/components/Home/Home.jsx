@@ -71,7 +71,7 @@ const Home = () => {
               <Stories />
             </Box>
 
-            <Box sx={{ mb: 2 }}>
+            <Box sx={{ mb: 2}}>
               <CreatePost />
             </Box>
 

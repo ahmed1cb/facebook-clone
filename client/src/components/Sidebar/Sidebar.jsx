@@ -8,14 +8,17 @@ import {
 } from "@mui/material";
 import { useSelector } from "react-redux";
 import api from "../../App/services/api";
+import { useNavigate } from "react-router-dom";
 
 export default () => {
+  const user = useSelector((s) => s.auth.user);
+  const go = useNavigate()
+
+
   const shortcuts = [
     { name: "Friends", icon: "👥" },
     { name: "Watch", icon: "📺" },
   ];
-
-  const user = useSelector((s) => s.auth.user);
 
   let profileImage = user.photo ? (
     <Avatar
@@ -28,7 +31,10 @@ export default () => {
   return (
     <Box sx={{ position: "sticky", top: 72 }}>
       <List>
-        <ListItemButton sx={{ borderRadius: 2, mb: 0.5 }}>
+        <ListItemButton
+          sx={{ borderRadius: 2, mb: 0.5 }}
+          onClick={() => go("/profile")}
+        >
           <ListItemAvatar>{profileImage}</ListItemAvatar>
           <ListItemText
             primary={user.name}

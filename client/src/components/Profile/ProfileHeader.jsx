@@ -12,7 +12,7 @@ import api from "../../App/services/api";
 
 export default function ProfileHeader({ user, isOwnProfile = true }) {
   const theme = useTheme();
-
+  
   let profileImage = user.photo ? (
     <Avatar
       sx={{
@@ -95,15 +95,11 @@ export default function ProfileHeader({ user, isOwnProfile = true }) {
               }}
             >
               {user.bio}
-              {/* @TODO ADD TO BACKEND */}
             </Typography>
 
             {/* Stats */}
             <Box sx={{ display: "flex", gap: 3, mb: 3 }}>
               <Box>
-                <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                  {user.friends}
-                </Typography>
                 <Typography variant="caption" color="text.secondary">
                   Friends {user.friends.length}
                 </Typography>

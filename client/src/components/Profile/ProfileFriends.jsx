@@ -46,27 +46,52 @@ export default function ProfileFriends({ friends }) {
       </Box>
 
       <Grid container spacing={2}>
-        {friends.map((friend, index) => (
-          <Grid item xs={12} key={index}>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-              <Avatar
-                sx={{
-                  width: 60,
-                  height: 60,
-                  bgcolor: theme.palette.primary.light,
-                  color: "white",
-                  fontSize: 20,
-                  fontWeight: 600,
-                }}
-              >
-                {friend.avatar}
-              </Avatar>
-              <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                {friend.name}
-              </Typography>
-            </Box>
-          </Grid>
-        ))}
+        {friends.map((friend, index) => {
+          friend = friend.friend;
+
+          let profileImage = friend.photo ? (
+            <Avatar
+              sx={{
+                width: 90,
+                height: 90,
+                p: 8,
+
+                border: `4px solid ${theme.palette.background.default}`,
+                bgcolor: theme.palette.primary.main,
+                color: "white",
+                fontSize: 48,
+                fontWeight: 700,
+              }}
+              src={`${api.getUri()}/../storage/app/public/${friend.photo}`}
+            ></Avatar>
+          ) : (
+            <Avatar
+              sx={{
+                width: 90,
+                height: 90,
+                p: 8,
+                border: `4px solid ${theme.palette.background.default}`,
+                bgcolor: theme.palette.primary.main,
+                color: "white",
+                fontSize: 48,
+                fontWeight: 700,
+              }}
+            >
+              {friend.name.slice(0, 2).toUpperCase()}
+            </Avatar>
+          );
+
+          return (
+            <Grid item xs={12} key={index}>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                {profileImage}
+                <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                  {friend.name}
+                </Typography>
+              </Box>
+            </Grid>
+          );
+        })}
 
         {friends.length == 0 && "No Friends Yet"}
       </Grid>

@@ -19,7 +19,7 @@ const Profile = () => {
         minHeight: "100vh",
       }}
     >
-      <ProfileHeader user={user} />
+      <ProfileHeader user={user} isOwnProfile={true} />
 
       <Container maxWidth="lg" sx={{ py: 3 }}>
         <Grid container spacing={3}>
