@@ -31,7 +31,7 @@ export default ({ post }) => {
 
   let profileImage = user.photo ? (
     <Avatar
-      src={`${api.getUri()}/../storage/app/public/${user.photo}`}
+      src={`${api.getUri()}/../storage/${user.photo}`}
     ></Avatar>
   ) : (
     <Avatar>{user.name.slice(0, 2).toUpperCase()}</Avatar>

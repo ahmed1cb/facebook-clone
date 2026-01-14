@@ -14,7 +14,7 @@ import {
   Schedule as ScheduleIcon,
 } from "@mui/icons-material";
 
-export default ({ user, isOwnProfile = true }) => {
+export default ({ user, isOwnProfile = true, setShowModal }) => {
   const theme = useTheme();
 
   return (
@@ -87,6 +87,8 @@ export default ({ user, isOwnProfile = true }) => {
             textTransform: "none",
             fontWeight: 600,
           }}
+          onClick={() => setShowModal((e) => !e)}
+          
         >
           Edit details
         </Button>

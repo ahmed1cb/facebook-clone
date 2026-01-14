@@ -6,12 +6,15 @@ import ProfileFriends from "./ProfileFriends";
 import CreatePost from "../Posts/CreatePost";
 import Posts from "../Posts/Posts";
 import { useSelector } from "react-redux";
+import { useState } from "react";
+import UpdateModal from "./UpdateModal";
 
 const Profile = () => {
   const theme = useTheme();
 
   const user = useSelector((s) => s.auth.user);
-
+  
+  const [showModal, setShowModal] = useState(false);
   return (
     <Box
       sx={{
@@ -19,7 +22,11 @@ const Profile = () => {
         minHeight: "100vh",
       }}
     >
-      <ProfileHeader user={user} isOwnProfile={true} />
+      <ProfileHeader
+        user={user}
+        isOwnProfile={true}
+        setShowModal={setShowModal}
+      />
 
       <Container maxWidth="lg" sx={{ py: 3 }}>
         <Grid container spacing={3}>
@@ -42,7 +49,7 @@ const Profile = () => {
                 top: 20,
               }}
             >
-              <ProfileIntro user={user} />
+              <ProfileIntro user={user} setShowModal={setShowModal} />
               <ProfilePhotos user={user} />
 
               <ProfileFriends friends={user.friends} />
@@ -62,6 +69,13 @@ const Profile = () => {
               <Posts posts={user.posts} />
             </Box>
           </Grid>
+          <UpdateModal
+            onClose={() => {
+              setShowModal(false);
+            }}
+            open={showModal}
+            userData={user}
+          />
         </Grid>
       </Container>
     </Box>

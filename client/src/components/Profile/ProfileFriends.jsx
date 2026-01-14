@@ -62,7 +62,7 @@ export default function ProfileFriends({ friends }) {
                 fontSize: 48,
                 fontWeight: 700,
               }}
-              src={`${api.getUri()}/../storage/app/public/${friend.photo}`}
+              src={`${api.getUri()}/../public/${friend.photo}`}
             ></Avatar>
           ) : (
             <Avatar

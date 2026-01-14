@@ -24,11 +24,14 @@ import {
 } from "@mui/icons-material";
 import { useLocation, useNavigate } from "react-router-dom";
 import Cookie from "../../App/Cookie/Cookie";
+import { useSelector } from "react-redux";
+import api from "../../App/services/api";
 
 export default () => {
   const theme = useTheme();
   const [menuAnchor, setMenuAnchor] = useState(null);
   const menuOpen = Boolean(menuAnchor);
+  const user = useSelector(s => s.auth.user)
 
   const handleMenuClick = (event) => {
     setMenuAnchor(event.currentTarget);
@@ -186,8 +189,9 @@ export default () => {
             <Avatar
               onClick={() => go("/profile")}
               sx={{ width: 32, height: 32, cursor: "pointer" }}
+              src={`${api.getUri()}/../storage/${user.photo}`}
             >
-              U
+              {user.name[0].toUpperCase()}
             </Avatar>
           </Box>
         </Toolbar>

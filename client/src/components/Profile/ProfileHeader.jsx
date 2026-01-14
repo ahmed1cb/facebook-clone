@@ -12,7 +12,7 @@ import api from "../../App/services/api";
 
 export default function ProfileHeader({ user, isOwnProfile = true }) {
   const theme = useTheme();
-  
+
   let profileImage = user.photo ? (
     <Avatar
       sx={{
@@ -24,7 +24,7 @@ export default function ProfileHeader({ user, isOwnProfile = true }) {
         fontSize: 48,
         fontWeight: 700,
       }}
-      src={`${api.getUri()}/../storage/app/public/${user.photo}`}
+      src={`${api.getUri()}/../storage/${user.photo}`}
     ></Avatar>
   ) : (
     <Avatar
@@ -48,8 +48,8 @@ export default function ProfileHeader({ user, isOwnProfile = true }) {
       <Box
         sx={{
           height: { xs: 200, md: 300 },
-          backgroundImage: user?.coverPhoto
-            ? `url(${api.getUri()}/storage/${user.coverPhoto})`
+          backgroundImage: user?.cover
+            ? `url('${api.getUri()}/../storage/${user.cover}')`
             : "linear-gradient(to left , white , black)",
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -115,15 +115,7 @@ export default function ProfileHeader({ user, isOwnProfile = true }) {
 
             {/* Action Buttons */}
             <Box sx={{ display: "flex", gap: 2 }}>
-              {isOwnProfile ? (
-                <Button
-                  variant="contained"
-                  startIcon={<Edit />}
-                  sx={{ textTransform: "none", fontWeight: 600 }}
-                >
-                  Edit Profile
-                </Button>
-              ) : (
+              {!isOwnProfile && (
                 <>
                   <Button
                     variant="contained"
@@ -131,13 +123,6 @@ export default function ProfileHeader({ user, isOwnProfile = true }) {
                     sx={{ textTransform: "none", fontWeight: 600 }}
                   >
                     Add Friend
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    startIcon={<Message />}
-                    sx={{ textTransform: "none", fontWeight: 600 }}
-                  >
-                    Message
                   </Button>
                 </>
               )}
