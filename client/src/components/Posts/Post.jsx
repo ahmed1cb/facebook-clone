@@ -21,18 +21,14 @@ import {
 import { useSelector } from "react-redux";
 import api from "../../App/services/api";
 
-
-export default ({ post }) => {
+export default ({ post  , ref , onLike}) => {
   const theme = useTheme();
 
-  let user = post.user;
-
-   user = user ??  useSelector((s) => s.auth.user);
+  const authUser = useSelector((s) => s.auth.user);
+  const user = post.user ?? authUser;
 
   let profileImage = user.photo ? (
-    <Avatar
-      src={`${api.getUri()}/../storage/${user.photo}`}
-    ></Avatar>
+    <Avatar src={`${api.getUri()}/../storage/${user.photo}`}></Avatar>
   ) : (
     <Avatar>{user.name.slice(0, 2).toUpperCase()}</Avatar>
   );
@@ -41,7 +37,6 @@ export default ({ post }) => {
     post.post_type == "IMG" || post.post_type == "VID"
       ? `${api.getUri()}/../storage/${post.post_content}`
       : "";
-
   return (
     <Card
       sx={{
@@ -50,6 +45,7 @@ export default ({ post }) => {
         bgcolor: theme.palette.background.paper,
         width: "100% !important",
       }}
+      // ref={ref}
     >
       <CardHeader
         avatar={profileImage}
@@ -132,13 +128,13 @@ export default ({ post }) => {
           startIcon={<ThumbUpIcon />}
           sx={{
             textTransform: "none",
-            color: post.isLiked ? 'primary' : theme.palette.text.secondary,
+            color: post.isLiked ? "primary" : theme.palette.text.secondary,
             flex: 1,
             fontWeight: 600,
-            
           }}
+          onClick={onLike}
         >
-          Like 
+          Like
         </Button>
         <Button
           startIcon={<CommentIcon />}
@@ -151,7 +147,6 @@ export default ({ post }) => {
         >
           Comment
         </Button>
-      
       </CardActions>
     </Card>
   );

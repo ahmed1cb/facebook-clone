@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { getPosts } from "../../App/Redux/Features/Posts/Services";
 import Loader from "../Loader/Loader";
+import PostContext from "../../App/Context/PostsContext";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -19,7 +20,16 @@ const Home = () => {
 
   const user = useSelector((s) => s.auth.user);
   const friends = user.friends;
-  const { posts, state } = useSelector((s) => s.posts);
+
+  const { state } = useSelector((s) => s.posts);
+  const p = useSelector((s) => s.posts.posts);
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    if (p && p.length > 0) {
+      setPosts(p);
+    }
+  }, [p]);
 
   useEffect(() => {
     if (!posts || posts.length === 0) {
@@ -81,92 +91,73 @@ const Home = () => {
   );
 
   return (
-    <Box
-      sx={{
-        height: "fit-content",
-        bgcolor: theme.palette.background.default,
-        pt: 2,
-        width: "100%",
-      }}
-    >
-      <Container maxWidth="lg">
-        <Grid container spacing={2}>
-          <Grid
-            item
-            xs={0}
-            lg={3}
-            sx={{ display: { xs: "none", lg: "block" } }}
-          >
-            <Sidebar />
-          </Grid>
+    posts && (
+      <PostContext.Provider value={{ posts: posts, setPosts }}>
+        <Box
+          sx={{
+            height: "fit-content",
+            bgcolor: theme.palette.background.default,
+            pt: 2,
+            width: "100%",
+          }}
+        >
+          <Container maxWidth="lg">
+            <Grid container spacing={2}>
+              <Grid
+                item
+                xs={0}
+                lg={3}
+                sx={{ display: { xs: "none", lg: "block" } }}
+              >
+                <Sidebar />
+              </Grid>
 
-          <Grid
-            item
-            xs={12}
-            lg={6}
-            sx={{
-              width: { sm: "100%", lg: "80%" },
-            }}
-          >
-            <Box sx={{ mb: 2 }}>
-              <CreatePost />
-            </Box>
+              <Grid
+                item
+                xs={12}
+                lg={6}
+                sx={{
+                  width: { sm: "100%", lg: "80%" },
+                }}
+              >
+                <Box sx={{ mb: 2 }}>
+                  <CreatePost />
+                </Box>
 
-            <Box>
-              {combinedPosts.length > 0 ? (
-                combinedPosts.map((post, index) => {
-                  if (combinedPosts.length === index + 1) {
-                    return (
-                      <div ref={lastPostElementRef} key={post.id || index}>
-                        <Posts posts={[post]} />
-                      </div>
-                    );
-                  }
-                  return <Posts posts={[post]} key={post.id || index} />;
-                })
-              ) : state !== "Loading" ? (
-                <Typography
-                  sx={{
-                    margin: "80px auto",
-                    width: "fit-content",
-                    color: "gray",
-                    textAlign: "center",
-                  }}
-                  variant="h4"
-                >
-                  No posts available
-                </Typography>
-              ) : null}
+                <Box>
+                  <Posts lastElementRef={lastPostElementRef} />
 
-              {(state === "Loading" || isLoadingMore) && <Loader />}
+                  {(state === "Loading" || isLoadingMore) && <Loader />}
 
-              {!hasMore && combinedPosts.length > 0 && (
-                <Typography
-                  sx={{
-                    margin: "40px auto",
-                    width: "fit-content",
-                    color: "gray",
-                    textAlign: "center",
-                  }}
-                  variant="body1"
-                >
-                  No more posts to show
-                </Typography>
-              )}
-            </Box>
-          </Grid>
+                  {!hasMore && combinedPosts.length > 0 && (
+                    <Typography
+                      sx={{
+                        margin: "40px auto",
+                        width: "fit-content",
+                        color: "gray",
+                        textAlign: "center",
+                      }}
+                      variant="body1"
+                    >
+                      No more posts to show
+                    </Typography>
+                  )}
+                </Box>
+              </Grid>
 
-          <Grid
-            item
-            xs={0}
-            lg={3}
-            sx={{ display: { xs: "none", lg: "block" } }}
-          >
-            <Contacts contacts={friends} />
-          </Grid>
-        </Grid>
-      </Container>
-    </Box>
+              <Grid
+                item
+                xs={0}
+                lg={3}
+                sx={{ display: { xs: "none", lg: "block" } }}
+              >
+                <Contacts contacts={friends} />
+              </Grid>
+            </Grid>
+          </Container>
+        </Box>
+      </PostContext.Provider>
+    )
   );
 };
 

@@ -6,79 +6,87 @@ import ProfileFriends from "./ProfileFriends";
 import CreatePost from "../Posts/CreatePost";
 import Posts from "../Posts/Posts";
 import { useSelector } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import UpdateModal from "./UpdateModal";
+import PostContext from "../../App/Context/PostsContext";
 
 const Profile = () => {
   const theme = useTheme();
 
   const user = useSelector((s) => s.auth.user);
-  
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    setPosts(user.posts);
+  }, [user]);
+
   const [showModal, setShowModal] = useState(false);
   return (
-    <Box
-      sx={{
-        bgcolor: theme.palette.background.default,
-        minHeight: "100vh",
-      }}
-    >
-      <ProfileHeader
-        user={user}
-        isOwnProfile={true}
-        setShowModal={setShowModal}
-      />
+    <PostContext.Provider value={{ posts, setPosts }}>
+      <Box
+        sx={{
+          bgcolor: theme.palette.background.default,
+          minHeight: "100vh",
+        }}
+      >
+        <ProfileHeader
+          user={user}
+          isOwnProfile={true}
+          setShowModal={setShowModal}
+        />
 
-      <Container maxWidth="lg" sx={{ py: 3 }}>
-        <Grid container spacing={3}>
-          <Grid
-            item
-            xs={12}
-            md={4}
-            sx={{
-              width: "100%",
-            }}
-          >
-            <Box
+        <Container maxWidth="lg" sx={{ py: 3 }}>
+          <Grid container spacing={3}>
+            <Grid
+              item
+              xs={12}
+              md={4}
               sx={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 2,
-                position: "sticky",
-                width: "100%",
-
-                top: 20,
-              }}
-            >
-              <ProfileIntro user={user} setShowModal={setShowModal} />
-              <ProfilePhotos user={user} />
-
-              <ProfileFriends friends={user.friends} />
-            </Box>
-          </Grid>
-
-          <Grid item xs={12} md={8} sx={{ width: "100%" }}>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 2,
                 width: "100%",
               }}
             >
-              <CreatePost />
-              <Posts posts={user.posts} />
-            </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 2,
+                  position: "sticky",
+                  width: "100%",
+
+                  top: 20,
+                }}
+              >
+                <ProfileIntro user={user} setShowModal={setShowModal} />
+                <ProfilePhotos user={user} />
+
+                <ProfileFriends friends={user.friends} />
+              </Box>
+            </Grid>
+
+            <Grid item xs={12} md={8} sx={{ width: "100%" }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 2,
+                  width: "100%",
+                }}
+              >
+                <CreatePost />
+                <Posts posts={user.posts} />
+              </Box>
+            </Grid>
+            <UpdateModal
+              onClose={() => {
+                setShowModal(false);
+              }}
+              open={showModal}
+              userData={user}
+            />
           </Grid>
-          <UpdateModal
-            onClose={() => {
-              setShowModal(false);
-            }}
-            open={showModal}
-            userData={user}
-          />
-        </Grid>
-      </Container>
-    </Box>
+        </Container>
+      </Box>
+    </PostContext.Provider>
   );
 };
 
