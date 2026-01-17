@@ -63,8 +63,6 @@ Route::middleware('throttle.json:80,1')->group(function () {
     });
 
 
-
-
     Route::prefix('comments')->middleware('auth.facebook')->controller(CommentsController::class)->group(function () {
 
         Route::post('/{postId}', 'commentOnPost');

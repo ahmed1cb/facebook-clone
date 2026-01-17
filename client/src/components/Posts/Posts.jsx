@@ -1,13 +1,18 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 import Post from "./Post";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import PostContext from "../../App/Context/PostsContext";
-import { like } from "../../App/services/postservices";
+import { DeletePost, like } from "../../App/services/postservices";
+import Alert from "../../App/Alert/Swal";
 
 export default ({ lastElementRef }) => {
   const { posts, setPosts } = useContext(PostContext);
-
+  const theme = useTheme();
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    Alert.init(theme);
+  }, []);
 
   const likePost = async (idx) => {
     if (loading) {
@@ -35,6 +40,19 @@ export default ({ lastElementRef }) => {
     setLoading(() => false);
   };
 
+  const deletePost = async (idx) => {
+    if (loading) {
+      return;
+    }
+    setLoading(() => true);
+
+    let post = posts[idx];
+    await DeletePost(post.id);
+    setPosts(posts.filter((p) => p.id !== post.id));
+
+    setLoading(() => false);
+  };
+
   return (
     <Box width={"100%"}>
       {posts.map((post, i) => {
@@ -45,6 +63,7 @@ export default ({ lastElementRef }) => {
             post={posts[i]}
             ref={isLast ? lastElementRef : null}
             onLike={() => likePost(i)}
+            onDelete={() => deletePost(i)}
           />
         );
       })}

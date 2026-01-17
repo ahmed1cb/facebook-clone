@@ -27,4 +27,31 @@ const like = async (postId) => {
 
 
 
-export { like }
+const DeletePost = async (postId) => {
+
+    try {
+        const response = await api.delete(`/posts/${postId}`, {
+            headers: {
+                Authorization: Cookie.get('authorization'),
+            }
+        });
+
+        return {
+            data: response.data,
+            message: "Success",
+            code: response.status
+        }
+    } catch (error) {
+        return {
+            data: {},
+            message: 'Fail',
+            code: error?.status ?? 500,
+            error: error
+
+        }
+    }
+}
+
+
+
+export { like, DeletePost }
