@@ -16,10 +16,14 @@ import {
 import { Close as CloseIcon, Person as PersonIcon } from "@mui/icons-material";
 import { update } from "../../App/services/profileServices";
 import api from "../../App/services/api";
+import Alert from "../../App/Alert/Swal";
+import { useDispatch, useSelector } from "react-redux";
+import { setUser } from "../../App/Redux/Features/Auth/AuthSlice";
 
 const UpdateModal = ({ open, onClose, userData }) => {
   const fileInputRef = useRef(null);
   const coverInputRef = useRef(null);
+  const user = useSelector((s) => s.auth.user);
 
   const profileFields = [
     { name: "name", label: "Full Name", gridSize: { xs: 12, sm: 6 } },
@@ -47,6 +51,7 @@ const UpdateModal = ({ open, onClose, userData }) => {
   const [displayedImage, setDisplayedImage] = useState(null);
   const [coverPreview, setCoverPreview] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (userData) {
@@ -96,8 +101,8 @@ const UpdateModal = ({ open, onClose, userData }) => {
   };
 
   const handleProfileUpdate = async () => {
-    if (!data.name.trim()) {
-      alert("Name must be at least 3 letters");
+    if (!data.name.trim() || data.name.trim().length < 3) {
+      Alert.error("Invalid Data", "Name must be at least 3 letters");
       return;
     }
 
@@ -111,10 +116,12 @@ const UpdateModal = ({ open, onClose, userData }) => {
     if (data.cover) formData.append("cover", data.cover);
 
     setIsLoading(true);
-    await update(formData);
-    setIsLoading(false);
+    let newData = await update(formData);
+    let newUser = newData?.data?.user;
 
-    location.reload();
+    setIsLoading(false);
+    dispatch(setUser(newUser));
+
     onClose();
   };
 

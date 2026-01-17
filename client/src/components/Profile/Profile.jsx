@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import UpdateModal from "./UpdateModal";
 import PostContext from "../../App/Context/PostsContext";
+import Alert from "../../App/Alert/Swal";
 
 const Profile = () => {
   const theme = useTheme();
@@ -16,6 +17,9 @@ const Profile = () => {
   const user = useSelector((s) => s.auth.user);
   const [posts, setPosts] = useState([]);
 
+  useEffect(() => {
+    Alert.init(theme);
+  }, []);
   useEffect(() => {
     setPosts(user.posts);
   }, [user]);
@@ -56,10 +60,10 @@ const Profile = () => {
                   top: 20,
                 }}
               >
-                <ProfileIntro user={user} setShowModal={setShowModal} />
-                <ProfilePhotos user={user} />
+                <ProfileIntro  setShowModal={setShowModal} />
+                <ProfilePhotos />
 
-                <ProfileFriends friends={user.friends} />
+                <ProfileFriends />
               </Box>
             </Grid>
 

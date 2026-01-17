@@ -13,9 +13,11 @@ import {
   School as SchoolIcon,
   Schedule as ScheduleIcon,
 } from "@mui/icons-material";
+import { useSelector } from "react-redux";
 
-export default ({ user, isOwnProfile = true, setShowModal }) => {
+export default ({ isOwnProfile = true, setShowModal }) => {
   const theme = useTheme();
+  const user = useSelector((s) => s.auth.user);
 
   return (
     <Paper
@@ -70,7 +72,10 @@ export default ({ user, isOwnProfile = true, setShowModal }) => {
               <ScheduleIcon />
             </ListItemIcon>
             <ListItemText
-              primary={`Joined At: ${user.joined_at || user.created_at.slice(0,user.created_at.indexOf('T') )}`}
+              primary={`Joined At: ${
+                user.joined_at ||
+                user.created_at.slice(0, user.created_at.indexOf("T"))
+              }`}
               primaryTypographyProps={{ variant: "body2" }}
             />
           </ListItem>
@@ -88,7 +93,6 @@ export default ({ user, isOwnProfile = true, setShowModal }) => {
             fontWeight: 600,
           }}
           onClick={() => setShowModal((e) => !e)}
-          
         >
           Edit details
         </Button>

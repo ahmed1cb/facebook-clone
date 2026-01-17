@@ -7,9 +7,14 @@ import {
   useTheme,
   Button,
 } from "@mui/material";
+import { useSelector } from "react-redux";
 
-export default function ProfileFriends({ friends }) {
+export default function ProfileFriends() {
   const theme = useTheme();
+
+  const user = useSelector((s) => s.auth.user);
+
+  let friends = user.friends;
 
   return (
     <Paper

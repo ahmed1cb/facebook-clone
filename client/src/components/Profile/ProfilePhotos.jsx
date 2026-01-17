@@ -1,10 +1,11 @@
 import { Box, Paper, Typography, Grid, useTheme, Button } from "@mui/material";
+import { useSelector } from "react-redux";
 
-export default ({ user }) => {
+export default () => {
   const theme = useTheme();
+
+  const user = useSelector((s) => s.auth.user);
   let photos = user.posts.filter((p) => p.type === "IMG");
-
-
 
   return (
     <Paper
@@ -55,8 +56,8 @@ export default ({ user }) => {
               }}
             />
           </Grid>
-        )) }
-        {photos.length === 0 && 'No Shared Photos Yet'}
+        ))}
+        {photos.length === 0 && "No Shared Photos Yet"}
       </Grid>
     </Paper>
   );

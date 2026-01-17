@@ -20,6 +20,23 @@ class Alert {
             },
             buttonsStyling: false,
         });
+
+        // Add global CSS for high z-index
+        if (typeof document !== 'undefined') {
+            const style = document.createElement('style');
+            style.innerHTML = `
+                .swal2-container {
+                    z-index: 999999 !important;
+                }
+                .swal2-popup {
+                    z-index: 999999 !important;
+                }
+                .swal2-backdrop-show {
+                    z-index: 999999999999999998 !important;
+                }
+            `;
+            document.head.appendChild(style);
+        }
     }
 
     /**
@@ -49,7 +66,7 @@ class Alert {
     }
 
     /**
-     * Show a confirmation dialog
+     * Show a confirmation dialog with high z-index
      * @param {string} title - Alert title
      * @param {string} text - Alert message
      * @param {string} confirmText - Confirm button text
@@ -80,6 +97,14 @@ class Alert {
                 confirmButton: 'swal-confirm-btn',
                 cancelButton: 'swal-cancel-btn',
             },
+            didOpen: (popup) => {
+                // Ensure maximum z-index on open
+                popup.style.zIndex = '999999';
+                const backdrop = popup.parentElement.querySelector('.swal2-backdrop-show');
+                if (backdrop) {
+                    backdrop.style.zIndex = '999999999999999998';
+                }
+            }
         });
 
         return result.isConfirmed; // returns true or false
@@ -103,7 +128,7 @@ class Alert {
     }
 
     /**
-     * Show a success message
+     * Show a success message with high z-index
      * @param {string} title - Alert title
      * @param {string} text - Alert message
      * @param {number} timer - Auto close timer in ms (0 for no auto close)
@@ -119,6 +144,13 @@ class Alert {
             confirmButtonColor: colors.success,
             background: colors.background,
             color: colors.text,
+            didOpen: (popup) => {
+                popup.style.zIndex = '999999';
+                const backdrop = popup.parentElement.querySelector('.swal2-backdrop-show');
+                if (backdrop) {
+                    backdrop.style.zIndex = '999999999999999998';
+                }
+            }
         };
 
         if (timer > 0) {
@@ -131,7 +163,7 @@ class Alert {
     }
 
     /**
-     * Show an error message
+     * Show an error message with high z-index
      * @param {string} title - Alert title
      * @param {string} text - Alert message
      */
@@ -146,11 +178,18 @@ class Alert {
             confirmButtonColor: colors.error,
             background: colors.background,
             color: colors.text,
+            didOpen: (popup) => {
+                popup.style.zIndex = '999999';
+                const backdrop = popup.parentElement.querySelector('.swal2-backdrop-show');
+                if (backdrop) {
+                    backdrop.style.zIndex = '999999999999999998';
+                }
+            }
         });
     }
 
     /**
-     * Show a warning message
+     * Show a warning message with high z-index
      * @param {string} title - Alert title
      * @param {string} text - Alert message
      */
@@ -165,11 +204,18 @@ class Alert {
             confirmButtonColor: colors.warning,
             background: colors.background,
             color: colors.text,
+            didOpen: (popup) => {
+                popup.style.zIndex = '999999';
+                const backdrop = popup.parentElement.querySelector('.swal2-backdrop-show');
+                if (backdrop) {
+                    backdrop.style.zIndex = '999999999999999998';
+                }
+            }
         });
     }
 
     /**
-     * Show an info message
+     * Show an info message with high z-index
      * @param {string} title - Alert title
      * @param {string} text - Alert message
      */
@@ -184,11 +230,18 @@ class Alert {
             confirmButtonColor: colors.info,
             background: colors.background,
             color: colors.text,
+            didOpen: (popup) => {
+                popup.style.zIndex = '999999';
+                const backdrop = popup.parentElement.querySelector('.swal2-backdrop-show');
+                if (backdrop) {
+                    backdrop.style.zIndex = '999999999999999998';
+                }
+            }
         });
     }
 
     /**
-     * Show a prompt dialog
+     * Show a prompt dialog with high z-index
      * @param {string} title - Prompt title
      * @param {string} text - Prompt message
      * @param {string} inputType - Input type (text, textarea, email, password, etc.)
@@ -217,6 +270,13 @@ class Alert {
                 }
                 return null;
             }),
+            didOpen: (popup) => {
+                popup.style.zIndex = '999999';
+                const backdrop = popup.parentElement.querySelector('.swal2-backdrop-show');
+                if (backdrop) {
+                    backdrop.style.zIndex = '999999999999999998';
+                }
+            }
         };
 
         const result = await Swal.fire(config);
@@ -225,7 +285,7 @@ class Alert {
     }
 
     /**
-     * Show a toast notification
+     * Show a toast notification with high z-index
      * @param {string} title - Toast title
      * @param {string} icon - success, error, warning, info, question
      * @param {number} timer - Duration in ms
@@ -245,6 +305,7 @@ class Alert {
                 popup: 'swal-toast',
             },
             didOpen: (toast) => {
+                toast.style.zIndex = '999999';
                 toast.addEventListener('mouseenter', Swal.stopTimer);
                 toast.addEventListener('mouseleave', Swal.resumeTimer);
             },
@@ -254,6 +315,36 @@ class Alert {
             icon,
             title,
         });
+    }
+
+    /**
+     * Set custom z-index for all future alerts
+     * @param {string} zIndex - CSS z-index value
+     */
+    static setZIndex(zIndex = '999999') {
+        if (typeof document !== 'undefined') {
+            const style = document.createElement('style');
+            style.id = 'swal-custom-zindex';
+            style.innerHTML = `
+                .swal2-container {
+                    z-index: ${zIndex} !important;
+                }
+                .swal2-popup {
+                    z-index: ${zIndex} !important;
+                }
+                .swal2-backdrop-show {
+                    z-index: ${parseInt(zIndex) - 1} !important;
+                }
+            `;
+
+            // Remove existing style if any
+            const existingStyle = document.getElementById('swal-custom-zindex');
+            if (existingStyle) {
+                existingStyle.remove();
+            }
+
+            document.head.appendChild(style);
+        }
     }
 }
 
