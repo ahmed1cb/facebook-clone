@@ -47,7 +47,6 @@ export default ({ post, ref, onLike, onDelete }) => {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-
   const handleMenuItemClick = async (action) => {
     handleMenuClose();
 
@@ -197,6 +196,15 @@ export default ({ post, ref, onLike, onDelete }) => {
           </Typography>
         </CardContent>
       )}
+      {post.post_type !== "TXT" &&
+        post.subtext &&
+        post.subtext.trim() != "" && (
+          <CardContent sx={{ pt: 0 }}>
+            <Typography variant="body1" color="text.primary">
+              {post.subtext}
+            </Typography>
+          </CardContent>
+        )}
       {post.post_type == "IMG" && (
         <CardMedia
           component="img"

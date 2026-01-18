@@ -93,6 +93,17 @@ const Home = () => {
 
   const [open, setOpen] = useState(false);
 
+  const onUpload = (newPost) => {
+    setCombinedPosts((prev) => {
+      const postExists = prev.some((post) => post.id === newPost.id);
+      if (postExists) {
+        console.warn("Post already exists in feed");
+        return prev;
+      }
+
+      return [newPost, ...prev];
+    });
+  };
   return (
     posts && (
       <PostContext.Provider
@@ -100,33 +111,101 @@ const Home = () => {
       >
         <Box
           sx={{
-            height: "fit-content",
+            minHeight: "100vh",
             bgcolor: theme.palette.background.default,
-            pt: 2,
             width: "100%",
+            pt: 2,
+            overflowX: "hidden",
           }}
         >
-          <Container maxWidth="lg">
-            <Grid container spacing={2}>
-              <Grid
-                item
-                xs={0}
-                lg={3}
-                sx={{ display: { xs: "none", lg: "block" } }}
-              >
-                <Sidebar />
-              </Grid>
-
+          <Container
+            maxWidth={false}
+            sx={{
+              width: "100%",
+              maxWidth: {
+                xs: "100%",
+                sm: "100%",
+                md: "100%",
+                lg: "1200px",
+                xl: "1400px",
+              },
+              px: {
+                xs: 1,
+                sm: 2,
+                md: 3,
+              },
+            }}
+          >
+            <Grid
+              container
+              spacing={2}
+              sx={{
+                alignItems: "flex-start",
+              }}
+            >
+              {/* Sidebar - Visible on all screens but with different widths */}
               <Grid
                 item
                 xs={12}
+                sm={4}
+                md={3}
+                lg={3}
+                sx={{
+                  display: { xs: "block", sm: "block" },
+
+                  flexShrink: 0,
+
+                  width: {
+                    xs: "100%",
+                    sm: "33.333%",
+                    md: "25%",
+                    lg: "25%",
+                  },
+
+                  order: { xs: 1, sm: 1 },
+                  mb: { xs: 2, sm: 0 },
+                }}
+              >
+                <Box
+                  sx={{
+                    position: { sm: "sticky" },
+                    top: { sm: 80 },
+                    maxHeight: { sm: "calc(100vh - 100px)" },
+                    overflowY: { sm: "auto" },
+                  }}
+                >
+                  <Sidebar />
+                </Box>
+              </Grid>
+
+              {/* Main Content */}
+              <Grid
+                item
+                xs={12}
+                sm={8}
+                md={6}
                 lg={6}
                 sx={{
-                  width: { sm: "100%", lg: "80%" },
+                  flexGrow: 1,
+
+                  width: {
+                    xs: "100%",
+                    sm: "66.667%",
+                    md: "50%",
+                    lg: "50%",
+                  },
+
+                  order: { xs: 3, sm: 2 },
+
+                  mx: { xs: "auto", sm: 0 },
+                  maxWidth: {
+                    xs: "100%",
+                    sm: "none",
+                  },
                 }}
               >
                 <Box sx={{ mb: 2 }}>
-                  <CreatePost  setOpen={setOpen} />
+                  <CreatePost setOpen={setOpen} />
                 </Box>
 
                 <Box>
@@ -141,6 +220,7 @@ const Home = () => {
                         width: "fit-content",
                         color: "gray",
                         textAlign: "center",
+                        fontSize: { xs: "0.875rem", sm: "1rem" },
                       }}
                       variant="body1"
                     >
@@ -150,17 +230,45 @@ const Home = () => {
                 </Box>
               </Grid>
 
+              {/* Contacts - Visible on all screens but with different widths */}
               <Grid
                 item
-                xs={0}
+                xs={12}
+                sm={12}
+                md={3}
                 lg={3}
-                sx={{ display: { xs: "none", lg: "block" } }}
+                sx={{
+                  display: { xs: "block", sm: "block" },
+                  flexShrink: 0,
+                  width: {
+                    xs: "100%",
+                    sm: "100%",
+                    md: "25%",
+                    lg: "25%",
+                  },
+
+                  order: { xs: 2, sm: 3 },
+                  mt: { xs: 2, sm: 0 },
+                }}
               >
-                <Contacts contacts={friends} />
+                <Box
+                  sx={{
+                    position: { md: "sticky" },
+                    top: { md: 80 },
+                    maxHeight: { md: "calc(100vh - 100px)" },
+                    overflowY: { md: "auto" },
+                  }}
+                >
+                  <Contacts contacts={friends} />
+                </Box>
               </Grid>
             </Grid>
 
-            <CreatePostModal open={open} onClose={() => setOpen(!open)} />
+            <CreatePostModal
+              open={open}
+              onClose={() => setOpen(!open)}
+              onUpload={onUpload}
+            />
           </Container>
         </Box>
       </PostContext.Provider>

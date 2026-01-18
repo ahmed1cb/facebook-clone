@@ -39,7 +39,7 @@ class PostController extends Controller
     public function uploadPost()
     {
 
-        $data = ['post_type', 'post_privacy', 'post_content', 'post_content'];
+        $data = ['post_type', 'post_privacy', 'post_content', 'subtext'];
 
         $check = Validator::make(request()->only($data), [
             'post_type' => ['in:TXT,IMG,VID', 'required'],
@@ -74,6 +74,7 @@ class PostController extends Controller
 
             ],
             'post_privacy' => ['in:PUB,PRIV,FRI'],
+            'subtext' => ['string']
         ]);
 
         $recordData = [];
@@ -101,7 +102,7 @@ class PostController extends Controller
         $recordData['post_type'] = request()->input('post_type');
         $recordData['post_privacy'] = request()->input('post_privacy');
         $recordData['user_id'] = request()->user()->id;
-
+        $recordData['subtext'] = request()->input('subtext');
         $post = Post::create($recordData);
 
 
@@ -272,7 +273,7 @@ class PostController extends Controller
             'likes as isLiked' => function ($q) use ($userId) {
                 $q->where('user_id', $userId);
             }
-        ])->paginate(10, ['*'], 'page', $page);
+        ])->orderBy('id', 'Desc')->paginate(10, ['*'], 'page', $page);
 
 
         return Response::json([

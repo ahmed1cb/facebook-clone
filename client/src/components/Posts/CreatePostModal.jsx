@@ -22,13 +22,26 @@ import {
   LockOutlined,
   CheckCircle,
 } from "@mui/icons-material";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { useSelector } from "react-redux";
+import api from "../../App/services/api";
+import Alert from "../../App/Alert/Swal";
+import { upload } from "../../App/services/postservices";
 
-export default ({ open, onClose }) => {
+export default ({ open, onClose , onUpload }) => {
   const theme = useTheme();
+
+  let defaultData = {
+    post_type: "TXT",
+    post_privacy: "PUB",
+    post_content: "",
+    subtext: "",
+  };
+  const [post, setPost] = useState(defaultData);
+  let [mediaPath, setMediaPath] = useState(null);
   const [privacyAnchorEl, setPrivacyAnchorEl] = useState(null);
   const [selectedPrivacy, setSelectedPrivacy] = useState("public");
-
+  const [loading, setLoading] = useState(false);
   const handlePrivacyClick = (event) => {
     setPrivacyAnchorEl(event.currentTarget);
   };
@@ -39,6 +52,15 @@ export default ({ open, onClose }) => {
 
   const handlePrivacySelect = (privacy) => {
     setSelectedPrivacy(privacy);
+
+    let privacies = {
+      public: "PUB",
+      private: "PRIV",
+      friends: "FRI",
+    };
+
+    setPost({ ...post, post_privacy: privacies[privacy] });
+
     handlePrivacyClose();
   };
 
@@ -89,6 +111,7 @@ export default ({ open, onClose }) => {
       backdropFilter: "blur(5px)",
     },
     modalContainer: {
+      minWidth: "80vw",
       maxWidth: "90vw",
       maxHeight: "90vh",
       overflow: "hidden",
@@ -249,6 +272,61 @@ export default ({ open, onClose }) => {
     },
   };
 
+  const user = useSelector((s) => s.auth.user);
+
+  let profileImage = user.photo ? (
+    <Avatar src={`${api.getUri()}/../storage/${user.photo}`}></Avatar>
+  ) : (
+    <Avatar>{user.name[0]}</Avatar>
+  );
+
+  const imgInputRef = useRef(null);
+  const videoInputRed = useRef(null);
+
+  const handleImageChanged = (e) => {
+
+    let file = e.target.files[0];
+    if (!file || !file.type.startsWith("image/")) {
+      Alert.error("Invalid Image File", "The Chosen File is Not an Image File");
+      return;
+    }
+    setPost({ ...post, post_type: "IMG", post_content: file });
+
+    const reader = new FileReader();
+
+    reader.onload = (r) => {
+      setMediaPath(r.target.result);
+    };
+
+    reader.readAsDataURL(file);
+  };
+
+  const uploadPost = async () => {
+    if (loading) {
+      return;
+    }
+    setLoading(() => true);
+    let form = new FormData();
+
+    form.append("post_privacy", post.post_privacy);
+    form.append("post_content", post.post_content);
+    form.append("post_type", post.post_type);
+    if (post.subtext) {
+      form.append("subtext", post.subtext);
+    }
+
+    if (post.post_type == "TXT" && post.post_content?.trim().length < 1) {
+      Alert.error("Invalid Details", "Post Content Cannot Be Empty");
+      return;
+    }
+
+    let uploaded = await upload(form);
+    uploaded = uploaded?.data?.data?.post;
+    onUpload(uploaded);
+    onClose();
+    setLoading(() => false);
+  };
+
   return (
     <Modal open={open} onClose={onClose} sx={styles.modal}>
       <Paper sx={styles.modalContainer}>
@@ -260,12 +338,9 @@ export default ({ open, onClose }) => {
         </Box>
 
         <Box sx={styles.userSection}>
-          <Avatar
-            src="https://i.pravatar.cc/150?img=1"
-            sx={{ width: 40, height: 40 }}
-          />
+          {profileImage}
           <Box sx={styles.userInfo}>
-            <Typography sx={styles.userName}>John Doe</Typography>
+            <Typography sx={styles.userName}>{user.name}</Typography>
             <Box sx={styles.audienceButton} onClick={handlePrivacyClick}>
               {getPrivacyIcon()}
               <Typography sx={styles.audienceText}>
@@ -338,10 +413,7 @@ export default ({ open, onClose }) => {
             <ListItemIcon sx={styles.privacyMenuIcon}>
               <GroupOutlined />
             </ListItemIcon>
-            <ListItemText
-              primary="Friends"
-              secondary="Your friends only"
-            />
+            <ListItemText primary="Friends" secondary="Your friends only" />
             {selectedPrivacy === "friends" && (
               <CheckCircle sx={styles.selectedPrivacyIcon} />
             )}
@@ -354,10 +426,7 @@ export default ({ open, onClose }) => {
             <ListItemIcon sx={styles.privacyMenuIcon}>
               <LockOutlined />
             </ListItemIcon>
-            <ListItemText
-              primary="Only me"
-              secondary="Only you can see this"
-            />
+            <ListItemText primary="Only me" secondary="Only you can see this" />
             {selectedPrivacy === "private" && (
               <CheckCircle sx={styles.selectedPrivacyIcon} />
             )}
@@ -366,31 +435,59 @@ export default ({ open, onClose }) => {
 
         <Box sx={styles.textAreaContainer}>
           <textarea
-            placeholder="What's on your mind, John?"
+            placeholder="What's on your mind"
             style={styles.textArea}
+            onChange={(e) =>
+              setPost({
+                ...post,
+                post_content:
+                  post.post_type === "TXT"
+                    ? e.target.value.trim()
+                    : post.post_content,
+                subtext: e.target.value.trim(),
+              })
+            }
           />
         </Box>
-
-        <Box sx={styles.mediaPreviewContainer}>
-          <Box
-            component="img"
-            src="https://images.unsplash.com/photo-1506744038136-46273834b3fb"
-            alt="Preview"
-            sx={styles.mediaPreview}
-          />
-          <IconButton size="small" sx={styles.removeButton}>
-            <Close fontSize="small" />
-          </IconButton>
-        </Box>
+        {post.post_type === "IMG" && (
+          <Box sx={styles.mediaPreviewContainer}>
+            <Box
+              component="img"
+              src={mediaPath}
+              alt="Preview"
+              sx={styles.mediaPreview}
+            />
+            <IconButton size="small" sx={styles.removeButton}>
+              <Close
+                fontSize="small"
+                onClick={() => {
+                  setPost({ ...post, post_content: "", post_type: "TXT" });
+                  setMediaPath(null);
+                }}
+              />
+            </IconButton>
+          </Box>
+        )}
 
         <Box sx={styles.actionButtons}>
           <Typography sx={styles.actionTitle}>Add to your post</Typography>
           <Box sx={styles.actionIcons}>
-            <IconButton sx={styles.actionIconButton}>
+            <IconButton
+              sx={styles.actionIconButton}
+              onClick={() => imgInputRef.current.click()}
+            >
               <PhotoCamera sx={{ color: styles.iconColor.photo }} />
             </IconButton>
           </Box>
         </Box>
+
+        <input
+          type="file"
+          hidden
+          accept="image/*"
+          ref={imgInputRef}
+          onChange={handleImageChanged}
+        />
 
         <Box sx={styles.modalFooter}>
           <Box sx={styles.privacyInfo}>
@@ -399,7 +496,13 @@ export default ({ open, onClose }) => {
               {getPrivacyText()} • {getPrivacyDescription()}
             </Typography>
           </Box>
-          <Button variant="contained" disableElevation sx={styles.postButton}>
+          <Button
+            variant="contained"
+            disableElevation
+            sx={styles.postButton}
+            onClick={uploadPost}
+            disabled={loading}
+          >
             Post
           </Button>
         </Box>

@@ -29,6 +29,7 @@ export default ({ setOpen }) => {
       {user.name.slice(0, 2).toUpperCase()}
     </Avatar>
   );
+
   return (
     <Paper
       sx={{

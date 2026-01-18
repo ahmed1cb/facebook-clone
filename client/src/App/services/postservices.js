@@ -54,4 +54,33 @@ const DeletePost = async (postId) => {
 
 
 
-export { like, DeletePost }
+const upload = async (data) => {
+
+    try {
+        const response = await api.post(`/posts/`, data, {
+            headers: {
+                Authorization: Cookie.get('authorization'),
+            }
+        });
+
+        return {
+            data: response.data,
+            message: "Success",
+            code: response.status
+        }
+    } catch (error) {
+        return {
+            data: {},
+            message: 'Fail',
+            code: error?.status ?? 500,
+            error: error
+
+        }
+    }
+}
+
+
+
+
+
+export { like, DeletePost, upload }
