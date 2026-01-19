@@ -28,6 +28,7 @@ const Home = () => {
   const [posts, setPosts] = useState([]);
   const [activePost, setActivePost] = useState(null);
   const [showComments , setShowComments] = useState(false)
+  const [open, setOpen] = useState(false);
   
   useEffect(() => {
     if (p && p.length > 0) {
@@ -94,7 +95,6 @@ const Home = () => {
     [state, isLoadingMore, hasMore, page, dispatch],
   );
 
-  const [open, setOpen] = useState(false);
 
   const onUpload = (newPost) => {
     setCombinedPosts((prev) => {

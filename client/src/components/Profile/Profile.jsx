@@ -10,6 +10,8 @@ import { useEffect, useState } from "react";
 import UpdateModal from "./UpdateModal";
 import PostContext from "../../App/Context/PostsContext";
 import Alert from "../../App/Alert/Swal";
+import CreatePostModal from "../Posts/CreatePostModal";
+import CommentsModal from "../Comments/Modal";
 
 const Profile = () => {
   const theme = useTheme();
@@ -24,7 +26,29 @@ const Profile = () => {
     setPosts(user.posts);
   }, [user]);
 
+  const [activePost, setActivePost] = useState(null);
+  const [showComments, setShowComments] = useState(false);
+  const [open, setOpen] = useState(false);
+
   const [showModal, setShowModal] = useState(false);
+
+  const onUpload = (newPost) => {
+    setPosts((prev) => {
+      const postExists = prev.some((post) => post.id === newPost.id);
+      if (postExists) {
+        console.warn("Post already exists in feed");
+        return prev;
+      }
+
+      return [newPost, ...prev];
+    });
+  };
+
+  const openCommentsPlace = (post) => {
+    setActivePost(() => post);
+    setShowComments(() => true);
+  };
+
   return (
     <PostContext.Provider value={{ posts, setPosts }}>
       <Box
@@ -60,7 +84,7 @@ const Profile = () => {
                   top: 20,
                 }}
               >
-                <ProfileIntro  setShowModal={setShowModal} />
+                <ProfileIntro setShowModal={setShowModal} />
                 <ProfilePhotos />
 
                 <ProfileFriends />
@@ -76,8 +100,8 @@ const Profile = () => {
                   width: "100%",
                 }}
               >
-                <CreatePost />
-                <Posts posts={user.posts} />
+                <CreatePost setOpen={setOpen} />
+                <Posts posts={user.posts} openCommentsPlace={openCommentsPlace} />
               </Box>
             </Grid>
             <UpdateModal
@@ -86,6 +110,17 @@ const Profile = () => {
               }}
               open={showModal}
               userData={user}
+            />
+
+            <CreatePostModal
+              open={open}
+              onClose={() => setOpen(!open)}
+              onUpload={onUpload}
+            />
+            <CommentsModal
+              open={showComments}
+              onClose={() => setShowComments(false)}
+              post={activePost}
             />
           </Grid>
         </Container>

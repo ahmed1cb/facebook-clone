@@ -112,15 +112,12 @@ export default function CommentsModal({
             ) : comments.length ? (
               <List disablePadding>
                 {comments.map((c, i) => {
-                  if (!c.user) {
-                    c.user = authUser;
-                  }
                   return (
                     <React.Fragment key={c.id}>
                       <ListItem alignItems="flex-start">
                         <ListItemAvatar>
                           <Avatar
-                            src={`${api.getUri()}/../storage/${c.user.photo}`}
+                            src={`${api.getUri()}/../storage/${c?.user?.photo ?? (!c.user ? authUser.photo : "")}`}
                           />
                         </ListItemAvatar>
                         <ListItemText
@@ -133,7 +130,7 @@ export default function CommentsModal({
                               }}
                             >
                               <Typography fontWeight={700}>
-                                {c.user.name}
+                                {c?.user?.name || authUser.name}
                               </Typography>
                               <Typography
                                 variant="caption"
