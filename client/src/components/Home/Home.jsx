@@ -27,9 +27,9 @@ const Home = () => {
   const p = useSelector((s) => s.posts.posts);
   const [posts, setPosts] = useState([]);
   const [activePost, setActivePost] = useState(null);
-  const [showComments , setShowComments] = useState(false)
+  const [showComments, setShowComments] = useState(false);
   const [open, setOpen] = useState(false);
-  
+
   useEffect(() => {
     if (p && p.length > 0) {
       setPosts(p);
@@ -95,7 +95,6 @@ const Home = () => {
     [state, isLoadingMore, hasMore, page, dispatch],
   );
 
-
   const onUpload = (newPost) => {
     setCombinedPosts((prev) => {
       const postExists = prev.some((post) => post.id === newPost.id);
@@ -109,11 +108,10 @@ const Home = () => {
   };
 
   const openCommentsPlace = (post) => {
-    setActivePost(() => post)
-    setShowComments(() => true)
-  }
+    setActivePost(() => post);
+    setShowComments(() => true);
+  };
 
-  
   return (
     posts && (
       <PostContext.Provider
@@ -178,7 +176,7 @@ const Home = () => {
               >
                 <Box
                   sx={{
-                    position: { sm: "sticky" },
+                    position: { md: "fixed" },
                     top: { sm: 80 },
                     maxHeight: { sm: "calc(100vh - 100px)" },
                     overflowY: { sm: "auto" },
@@ -219,7 +217,10 @@ const Home = () => {
                 </Box>
 
                 <Box>
-                  <Posts lastElementRef={lastPostElementRef} openCommentsPlace={openCommentsPlace} />
+                  <Posts
+                    lastElementRef={lastPostElementRef}
+                    openCommentsPlace={openCommentsPlace}
+                  />
 
                   {(state === "Loading" || isLoadingMore) && <Loader />}
 
@@ -263,8 +264,8 @@ const Home = () => {
               >
                 <Box
                   sx={{
-                    position: { md: "sticky" },
-                    top: { md: 80 },
+                    position: { md: "fixed" },
+                    top: { md: 300 },
                     maxHeight: { md: "calc(100vh - 100px)" },
                     overflowY: { md: "auto" },
                   }}
@@ -280,7 +281,11 @@ const Home = () => {
               onUpload={onUpload}
             />
 
-            <CommentsModal open={showComments} onClose={() => setShowComments(false)} post={activePost} />
+            <CommentsModal
+              open={showComments}
+              onClose={() => setShowComments(false)}
+              post={activePost}
+            />
           </Container>
         </Box>
       </PostContext.Provider>

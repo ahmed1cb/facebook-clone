@@ -10,11 +10,9 @@ export const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-
         setUser: (s, a) => {
             s.user = a.payload
         }
-
     },
     extraReducers: (b) => {
         // User
@@ -27,15 +25,10 @@ export const authSlice = createSlice({
             s.state = 'Fail'
         }).addCase(getAuthorizedUser.fulfilled, (s, a) => {
             if (a.payload) {
-
                 s.state = 'Success'
-
                 s.user = a.payload.data.user
             }
         })
-
-
-
     }
 })
 
