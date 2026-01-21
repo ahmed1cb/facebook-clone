@@ -213,7 +213,7 @@ const Register = () => {
                   {isLoading ? (
                     <CircularProgress size={24} color="inherit" />
                   ) : (
-                    "Log in"
+                    "Register"
                   )}
                 </Button>
 

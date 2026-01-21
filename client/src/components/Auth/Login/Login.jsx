@@ -21,13 +21,12 @@ const Login = () => {
   const theme = useTheme();
   const go = useNavigate();
 
-
-
   useEffect(() => {
     if(Cookie.get('authorization')){
       go('/')
     }
   },[])
+  
   const [data, setData] = useState({
     email: "",
     password: "",

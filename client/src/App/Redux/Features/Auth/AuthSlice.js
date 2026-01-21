@@ -26,13 +26,12 @@ export const authSlice = createSlice({
         }).addCase(getAuthorizedUser.rejected, (s, a) => {
             s.state = 'Fail'
         }).addCase(getAuthorizedUser.fulfilled, (s, a) => {
-            if (!a.payload) {
-                s.state = 'Error'
-                return
-            }
-            s.state = 'Success'
+            if (a.payload) {
 
-            s.user = a.payload.data.user
+                s.state = 'Success'
+
+                s.user = a.payload.data.user
+            }
         })
 
 
