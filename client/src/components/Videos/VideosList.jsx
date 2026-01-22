@@ -20,7 +20,6 @@ export default ({ videos }) => {
     }
   };
 
-  // Auto scroll to current video
   useEffect(() => {
     if (containerRef.current) {
       const element = containerRef.current.children[currentIndex];
@@ -30,21 +29,22 @@ export default ({ videos }) => {
     }
   }, [currentIndex]);
 
-  // Handle scroll wheel
   const handleWheel = (e) => {
-    e.preventDefault();
     if (e.deltaY > 0) {
       handleNext();
     } else {
       handlePrev();
     }
+
+    return false;
+
   };
 
   return (
     <Box
       sx={{
         position: "relative",
-        height: "100vh",
+        height: "95vh",
         overflow: "hidden",
         bgcolor: theme.palette.grey[900],
       }}
@@ -62,6 +62,8 @@ export default ({ videos }) => {
           scrollbarWidth: "none",
         }}
       >
+        {videos.length === 0 && <Typography component={'h2'} sx={{fontSize:'40px' , color:'gray' , p:3 , textAlign:'center'}}>No Videos Yet</Typography>}
+
         {videos.map((video, index) => (
           <Box
             key={video.id}

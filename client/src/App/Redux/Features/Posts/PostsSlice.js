@@ -1,8 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { getPosts } from './Services'
+import { getPosts, getVideos } from './Services'
 
 const initialState = {
     posts: null,
+    videos: null,
     state: "Loading"
 }
 
@@ -18,7 +19,7 @@ export const postsSlice = createSlice({
             }
         }
     },
-    
+
     extraReducers: (b) => {
         b.addCase(getPosts.pending, (s) => {
             s.state = 'Loading'
@@ -26,6 +27,16 @@ export const postsSlice = createSlice({
             s.state = 'Fail'
         }).addCase(getPosts.fulfilled, (s, a) => {
             s.posts = a.payload?.data?.posts || []
+            s.state = 'Success'
+        })
+
+
+        b.addCase(getVideos.pending, (s) => {
+            s.state = 'Loading'
+        }).addCase(getVideos.rejected, (s) => {
+            s.state = 'Fail'
+        }).addCase(getVideos.fulfilled, (s, a) => {
+            s.videos = a.payload?.data?.videos || []
             s.state = 'Success'
         })
 

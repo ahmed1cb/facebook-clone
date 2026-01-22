@@ -23,4 +23,26 @@ const getPosts = createAsyncThunk('getPosts', async (page, { rejectWithValue }) 
 })
 
 
-export { getPosts }
+
+const getVideos = createAsyncThunk('getVideos', async (page, { rejectWithValue }) => {
+
+    try {
+        let token = Cookie.get('authorization');
+
+        const response = await api.get(`/videos?page=${page}`, {
+            headers: {
+                Authorization: token
+            }
+        });
+
+        return response.data;
+
+    } catch (e) {
+        rejectWithValue(e)
+    }
+
+})
+
+
+
+export { getPosts, getVideos }

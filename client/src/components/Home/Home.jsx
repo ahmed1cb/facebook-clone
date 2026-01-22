@@ -96,15 +96,18 @@ const Home = () => {
   );
 
   const onUpload = (newPost) => {
-    setCombinedPosts((prev) => {
-      const postExists = prev.some((post) => post.id === newPost.id);
-      if (postExists) {
-        console.warn("Post already exists in feed");
-        return prev;
-      }
+    if (newPost.post_privacy === 'PUB'){
 
-      return [newPost, ...prev];
-    });
+      setCombinedPosts((prev) => {
+        const postExists = prev.some((post) => post.id === newPost.id);
+        if (postExists) {
+          console.warn("Post already exists in feed");
+          return prev;
+        }
+        
+        return [newPost, ...prev];
+      });
+    }
   };
 
   const openCommentsPlace = (post) => {
