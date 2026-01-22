@@ -29,7 +29,7 @@ const getVideos = createAsyncThunk('getVideos', async (page, { rejectWithValue }
     try {
         let token = Cookie.get('authorization');
 
-        const response = await api.get(`/videos?page=${page}`, {
+        const response = await api.get(`/posts/videos?pdage=${page}`, {
             headers: {
                 Authorization: token
             }

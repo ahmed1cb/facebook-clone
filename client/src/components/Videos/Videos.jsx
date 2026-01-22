@@ -9,7 +9,6 @@ const Videos = () => {
 
   const dispatch = useDispatch()
   const videos = useSelector((s) => s.posts.videos);
-
   useEffect(() => {
     if (!videos){
       dispatch(getVideos(1))
@@ -26,7 +25,6 @@ const Videos = () => {
     >
       <Container maxWidth="lg">
         <VideosList videos={videos} />
-
       </Container>
     </Box>
   );
