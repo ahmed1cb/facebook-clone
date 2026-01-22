@@ -5,7 +5,7 @@ import PostContext from "../../App/Context/PostsContext";
 import { DeletePost, like } from "../../App/services/postservices";
 import Alert from "../../App/Alert/Swal";
 
-export default ({ lastElementRef, openCommentsPlace }) => {
+export default ({ lastElementRef, openCommentsPlace, openEditModal }) => {
   const { posts, setPosts } = useContext(PostContext);
   const theme = useTheme();
   const [loading, setLoading] = useState(false);
@@ -56,6 +56,11 @@ export default ({ lastElementRef, openCommentsPlace }) => {
     setLoading(() => false);
   };
 
+  const onPostEditClicked = (idx) => {
+    let post = posts[idx];
+    openEditModal(post);
+  };
+
   return (
     <Box width={"100%"}>
       {posts.map((post, i) => {
@@ -68,6 +73,8 @@ export default ({ lastElementRef, openCommentsPlace }) => {
             onLike={() => likePost(i)}
             onDelete={() => deletePost(i)}
             onCommentsOpen={() => onCommentsOpen(i)}
+            onEdit={() => onPostEditClicked(i)}
+     
           />
         );
       })}

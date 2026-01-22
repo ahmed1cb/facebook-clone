@@ -10,6 +10,7 @@ import Loader from "../Loader/Loader";
 import PostContext from "../../App/Context/PostsContext";
 import CreatePostModal from "../Posts/CreatePostModal";
 import CommentsModal from "../Comments/Modal";
+import EditPostModal from "../Posts/EditPostModal";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -29,6 +30,7 @@ const Home = () => {
   const [activePost, setActivePost] = useState(null);
   const [showComments, setShowComments] = useState(false);
   const [open, setOpen] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
 
   useEffect(() => {
     if (p && p.length > 0) {
@@ -96,15 +98,14 @@ const Home = () => {
   );
 
   const onUpload = (newPost) => {
-    if (newPost.post_privacy === 'PUB'){
-
+    if (newPost.post_privacy === "PUB") {
       setCombinedPosts((prev) => {
         const postExists = prev.some((post) => post.id === newPost.id);
         if (postExists) {
           console.warn("Post already exists in feed");
           return prev;
         }
-        
+
         return [newPost, ...prev];
       });
     }
@@ -113,6 +114,11 @@ const Home = () => {
   const openCommentsPlace = (post) => {
     setActivePost(() => post);
     setShowComments(() => true);
+  };
+
+  const openEditModal = (post) => {
+    setActivePost(() => post);
+    setShowEditModal(true);
   };
 
   return (
@@ -223,6 +229,7 @@ const Home = () => {
                   <Posts
                     lastElementRef={lastPostElementRef}
                     openCommentsPlace={openCommentsPlace}
+                    openEditModal={openEditModal}
                   />
 
                   {(state === "Loading" || isLoadingMore) && <Loader />}
@@ -288,6 +295,19 @@ const Home = () => {
               open={showComments}
               onClose={() => setShowComments(false)}
               post={activePost}
+            />
+
+            <EditPostModal
+              open={showEditModal}
+              onClose={() => setShowEditModal(false)}
+              post={activePost}
+              onUpdate={(updatedPost) =>
+                setCombinedPosts(
+                  combinedPosts
+                    .map((p) => (p.id === updatedPost.id ? updatedPost : p))
+                    .filter((p) => p.post_privacy === "PUB"),
+                )
+              }
             />
           </Container>
         </Box>

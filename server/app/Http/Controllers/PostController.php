@@ -160,7 +160,7 @@ class PostController extends Controller
         }
 
 
-        $updateableData = ['post_privacy', 'post_content'];
+        $updateableData = ['post_privacy', 'post_content', 'subtext'];
 
         $check = Validator::make(request()->only($updateableData), [
             'post_content' => [
@@ -195,6 +195,7 @@ class PostController extends Controller
 
             ],
             'post_privacy' => ['in:PUB,PRIV,FRI'],
+            'subtext' => ['string']
         ]);
 
 
@@ -212,8 +213,12 @@ class PostController extends Controller
             $newData['post_privacy'] = request()->input('post_privacy');
         }
 
-        if (request()->has('post_content')) {
+        if (request()->has('post_content') && $targetPost->post_type === 'TXT') {
             $newData['post_content'] = request()->input('post_content');
+        }
+
+        if (request()->has('subtext')) {
+            $newData['subtext'] = request()->input('subtext');
         }
 
 

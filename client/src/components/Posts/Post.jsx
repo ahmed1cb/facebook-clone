@@ -33,7 +33,7 @@ import api from "../../App/services/api";
 import Alert from "../../App/Alert/Swal";
 import VideoPlayer from "./VideoPlayer";
 
-export default ({ post, ref, onLike, onDelete , onCommentsOpen }) => {
+export default ({ post, ref, onLike, onDelete , onCommentsOpen , onEdit }) => {
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -53,7 +53,7 @@ export default ({ post, ref, onLike, onDelete , onCommentsOpen }) => {
 
     switch (action) {
       case "edit":
-        // Handle edit logic
+        onEdit()
         break;
       case "delete":
         let check = await Alert.confirm("Post Deletion", "Are You Sure");

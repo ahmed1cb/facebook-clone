@@ -12,6 +12,7 @@ import PostContext from "../../App/Context/PostsContext";
 import Alert from "../../App/Alert/Swal";
 import CreatePostModal from "../Posts/CreatePostModal";
 import CommentsModal from "../Comments/Modal";
+import EditPostModal from "../Posts/EditPostModal";
 
 const Profile = () => {
   const theme = useTheme();
@@ -29,7 +30,7 @@ const Profile = () => {
   const [activePost, setActivePost] = useState(null);
   const [showComments, setShowComments] = useState(false);
   const [open, setOpen] = useState(false);
-
+  const [showEditModal, setShowEditModal] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
   const onUpload = (newPost) => {
@@ -47,6 +48,11 @@ const Profile = () => {
   const openCommentsPlace = (post) => {
     setActivePost(() => post);
     setShowComments(() => true);
+  };
+
+  const openEditModal = (post) => {
+    setActivePost(post);
+    setShowEditModal(true);
   };
 
   return (
@@ -101,7 +107,11 @@ const Profile = () => {
                 }}
               >
                 <CreatePost setOpen={setOpen} />
-                <Posts posts={user.posts} openCommentsPlace={openCommentsPlace} />
+                <Posts
+                  posts={user.posts}
+                  openEditModal={openEditModal}
+                  openCommentsPlace={openCommentsPlace}
+                />
               </Box>
             </Grid>
             <UpdateModal
@@ -121,6 +131,18 @@ const Profile = () => {
               open={showComments}
               onClose={() => setShowComments(false)}
               post={activePost}
+            />
+
+            <EditPostModal
+              open={showEditModal}
+              onClose={() => setShowEditModal(false)}
+              post={activePost}
+              onUpdate={(updatedPost) =>
+                setPosts(
+                  posts
+                    .map((p) => (p.id === updatedPost.id ? updatedPost : p))
+                )
+              }
             />
           </Grid>
         </Container>
