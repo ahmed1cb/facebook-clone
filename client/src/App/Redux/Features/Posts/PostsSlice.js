@@ -17,6 +17,13 @@ export const postsSlice = createSlice({
             if (index !== -1) {
                 state.posts[index] = updated;
             }
+        },
+        setVideos: (state, action) => {
+            const updated = action.payload;
+            const index = state.videos.findIndex(p => p.id === updated.id);
+            if (index !== -1) {
+                state.videos[index] = updated;
+            }
         }
     },
 
@@ -45,6 +52,6 @@ export const postsSlice = createSlice({
 })
 
 
-export const { setPosts } = postsSlice.actions
+export const { setPosts , setVideos} = postsSlice.actions
 
 export default postsSlice.reducer

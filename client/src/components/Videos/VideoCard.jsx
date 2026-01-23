@@ -284,7 +284,7 @@ const VideoCard = (props) => {
           {/* Comment Button */}
           <Box sx={{ textAlign: "center" }}>
             <IconButton
-              onClick={(e) => e.stopPropagation()}
+              onClick={(e) => {e.stopPropagation(); props.onCommentClicked(video)}}
               sx={{
                 color: "white",
                 width: 44,

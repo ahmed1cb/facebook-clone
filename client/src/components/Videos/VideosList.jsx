@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Box, Typography, useTheme } from "@mui/material";
 import VideoCard from "./VideoCard";
 
-export default ({ videos }) => {
+export default ({ videos, setActivePost, setOpen }) => {
   const theme = useTheme();
   const [currentIndex, setCurrentIndex] = useState(0);
   const containerRef = useRef(null);
@@ -36,6 +36,11 @@ export default ({ videos }) => {
     }
 
     return false;
+  };
+
+  const onCommentClicked = (post) => {
+    setActivePost(post);
+    setOpen(true);
   };
 
   return (
@@ -77,7 +82,7 @@ export default ({ videos }) => {
               scrollSnapStop: "always",
             }}
           >
-            <VideoCard video={video} />
+            <VideoCard video={video} onCommentClicked={onCommentClicked} />
           </Box>
         ))}
       </Box>

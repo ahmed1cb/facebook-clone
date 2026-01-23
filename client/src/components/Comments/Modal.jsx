@@ -25,6 +25,8 @@ export default function CommentsModal({
   open = true,
   onClose = () => {},
   post,
+  onComment = () => {},
+  onDelete = () => {},
 }) {
   const [comments, setComments] = useState([]);
   const [text, setText] = useState("");
@@ -34,7 +36,6 @@ export default function CommentsModal({
   const [selectedComment, setSelectedComment] = useState(null);
   const authUser = useSelector((s) => s.auth.user);
   const { setPosts } = useContext(PostContext);
-
   useEffect(() => {
     if (post) {
       setComments(post.comments);
@@ -52,17 +53,21 @@ export default function CommentsModal({
     setLoading(() => true);
 
     const uploadedComment = await comment(id, commentData);
-    setPosts((posts) =>
-      posts.map((p) =>
-        p.id === post.id
-          ? {
-              ...p,
-              comments: [...p.comments, uploadedComment.data.data.comment],
-            }
-          : p,
-      ),
-    );
-
+    if (uploadedComment?.data?.data?.comment) {
+      onComment(uploadedComment.data.data.comment);
+    }
+    if (setPosts) {
+      setPosts((posts) =>
+        posts.map((p) =>
+          p.id === post.id
+            ? {
+                ...p,
+                comments: [...p.comments, uploadedComment.data.data.comment],
+              }
+            : p,
+        ),
+      );
+    }
     setComments([...comments, uploadedComment.data.data.comment]);
     setText("");
     setLoading(() => false);
@@ -80,7 +85,6 @@ export default function CommentsModal({
 
   const deleteComment = async () => {
     if (!selectedComment) return;
-
     setDeleting(true);
     try {
       await deleteCommentById(selectedComment.id);
@@ -89,12 +93,14 @@ export default function CommentsModal({
         (c) => c.id !== selectedComment.id,
       );
       setComments(updatedComments);
-
-      setPosts((posts) =>
-        posts.map((p) =>
-          p.id === post.id ? { ...p, comments: updatedComments } : p,
-        ),
-      );
+      onDelete(selectedComment.id);
+      if (setPosts) {
+        setPosts((posts) =>
+          posts.map((p) =>
+            p.id === post.id ? { ...p, comments: updatedComments } : p,
+          ),
+        );
+      }
     } finally {
       setDeleting(false);
       handleMenuClose();
