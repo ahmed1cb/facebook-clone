@@ -16,7 +16,7 @@ class AuthController extends Controller
         $userId = request()->user()->id;
         $user = request()->user()->load([
             'posts' => function ($q) use ($userId) {
-                return $q->withCount('likes', 'comments')->with('comments')->withExists([
+                return $q->withCount('likes', 'comments')->with('comments.user')->withExists([
                     'likes as isLiked' => function ($q) use ($userId) {
                         return $q->where('user_id', $userId);
                     }
