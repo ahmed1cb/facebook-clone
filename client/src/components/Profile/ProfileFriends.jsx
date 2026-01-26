@@ -10,11 +10,9 @@ import {
 import { useSelector } from "react-redux";
 import api from "../../App/services/api";
 
-export default function ProfileFriends() {
+export default function ProfileFriends({ user }) {
   const theme = useTheme();
 
-  const user = useSelector((s) => s.auth.user);
-  
   let friends = user.friends;
 
   return (

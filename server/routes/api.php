@@ -7,6 +7,7 @@ use App\Http\Controllers\FriendsController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RequestsController;
+use App\Http\Controllers\UsersController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('throttle.json:80,1')->group(function () {
@@ -24,6 +25,8 @@ Route::middleware('throttle.json:80,1')->group(function () {
         Route::post('login', [AuthController::class, 'login']);
 
     });
+
+    Route::get('/users/{id}', [UsersController::class, 'getUser'])->middleware('auth.facebook');
 
 
     Route::prefix('requests')->middleware('auth.facebook')->controller(RequestsController::class)->group(function () {
@@ -63,7 +66,7 @@ Route::middleware('throttle.json:80,1')->group(function () {
 
     });
 
-    
+
     Route::prefix('comments')->middleware('auth.facebook')->controller(CommentsController::class)->group(function () {
 
         Route::post('/{postId}', 'commentOnPost');
@@ -76,8 +79,6 @@ Route::middleware('throttle.json:80,1')->group(function () {
 
 
     Route::get('/search/{query}', [DataController::class, 'search'])->middleware('auth.facebook');
-
-
 
 
 });

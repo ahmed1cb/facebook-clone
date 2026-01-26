@@ -15,6 +15,7 @@ import NotFound from "./components/States/404";
 import Settings from "./components/Settings/Settings";
 import { Provider } from "react-redux";
 import { store } from "./App/Redux/Store";
+import User from "./components/User/User";
 
 function App() {
   const [mode, setMode] = useState(localStorage.mode ?? "light");
@@ -34,6 +35,7 @@ function App() {
                 <Route path="profile" element={<Profile />} />
                 <Route path="search/:query" element={<SearchResults />} />
                 <Route path="settings" element={<Settings />} />
+                <Route path="user/:id" element={<User />} />
               </Route>
 
               <Route path="/auth">

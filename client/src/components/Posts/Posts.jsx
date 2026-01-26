@@ -5,7 +5,7 @@ import PostContext from "../../App/Context/PostsContext";
 import { DeletePost, like } from "../../App/services/postservices";
 import Alert from "../../App/Alert/Swal";
 
-export default ({ lastElementRef, openCommentsPlace, openEditModal }) => {
+export default ({ user, lastElementRef, openCommentsPlace, openEditModal }) => {
   const { posts, setPosts } = useContext(PostContext);
   const theme = useTheme();
   const [loading, setLoading] = useState(false);
@@ -67,6 +67,7 @@ export default ({ lastElementRef, openCommentsPlace, openEditModal }) => {
         let isLast = i === posts.length - 1;
         return (
           <Post
+            user={user}
             key={post.id}
             post={posts[i]}
             ref={isLast ? lastElementRef : null}
@@ -74,7 +75,6 @@ export default ({ lastElementRef, openCommentsPlace, openEditModal }) => {
             onDelete={() => deletePost(i)}
             onCommentsOpen={() => onCommentsOpen(i)}
             onEdit={() => onPostEditClicked(i)}
-     
           />
         );
       })}

@@ -13,11 +13,9 @@ import {
   School as SchoolIcon,
   Schedule as ScheduleIcon,
 } from "@mui/icons-material";
-import { useSelector } from "react-redux";
 
-export default ({ isOwnProfile = true, setShowModal }) => {
+export default ({ user, isOwnProfile = true, setShowModal }) => {
   const theme = useTheme();
-  const user = useSelector((s) => s.auth.user);
 
   return (
     <Paper

@@ -2,10 +2,9 @@ import { Box, Paper, Typography, Grid, useTheme, Button } from "@mui/material";
 import { useSelector } from "react-redux";
 import api from "../../App/services/api";
 
-export default () => {
+export default ({user}) => {
   const theme = useTheme();
 
-  const user = useSelector((s) => s.auth.user);
 
   let photos = user.posts.filter((p) => p.post_type === "IMG").slice(0 , 20);
 

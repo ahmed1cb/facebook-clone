@@ -34,15 +34,25 @@ import { useSelector } from "react-redux";
 import api from "../../App/services/api";
 import Alert from "../../App/Alert/Swal";
 import VideoPlayer from "./VideoPlayer";
+import { useNavigate } from "react-router-dom";
 
-export default ({ post, ref, onLike, onDelete, onCommentsOpen, onEdit }) => {
+export default ({
+  user = null,
+  post,
+  ref,
+  onLike,
+  onDelete,
+  onCommentsOpen,
+  onEdit,
+}) => {
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState(null);
   const [isHovered, setIsHovered] = useState(false);
   const open = Boolean(anchorEl);
+  const go = useNavigate();
 
   const authUser = useSelector((s) => s.auth.user);
-  const user = post.user ?? authUser;
+  user = user ?? post.user ?? authUser;
 
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -133,6 +143,7 @@ export default ({ post, ref, onLike, onDelete, onCommentsOpen, onEdit }) => {
       onMouseLeave={handleMouseLeave}
     >
       <CardHeader
+        onClick={() => authUser.id !== user.id && go(`/user/${user.id}`)}
         avatar={profileImage}
         action={
           <Box>
@@ -369,7 +380,7 @@ export default ({ post, ref, onLike, onDelete, onCommentsOpen, onEdit }) => {
                 color="primary"
                 sx={{ fontWeight: 600 }}
               >
-                {Number.isNaN(post.likes_count) ? 1 : post.likes_count}
+                {post.likes_count ?? 0}
               </Typography>
             </Box>
             <Box

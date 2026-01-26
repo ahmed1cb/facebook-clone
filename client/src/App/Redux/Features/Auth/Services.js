@@ -14,7 +14,7 @@ const getAuthorizedUser = createAsyncThunk(
 
             return response.data
         } catch (e) {
-            rejectWithValue(e)
+            return rejectWithValue(e)
         }
     },
 )
