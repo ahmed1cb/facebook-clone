@@ -13,7 +13,7 @@ export default function User() {
   let autorizedUser = useSelector((s) => s.auth.user);
   const go = useNavigate();
   useEffect(() => {
-    if (!user) {
+    if (!user || (user && user.id != id)) {
       dispatch(getUser(id));
     }
 
