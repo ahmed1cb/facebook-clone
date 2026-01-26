@@ -4,12 +4,13 @@ import { useContext, useEffect, useState } from "react";
 import PostContext from "../../App/Context/PostsContext";
 import { DeletePost, like } from "../../App/services/postservices";
 import Alert from "../../App/Alert/Swal";
+import { useDispatch } from "react-redux";
 
 export default ({ user, lastElementRef, openCommentsPlace, openEditModal }) => {
   const { posts, setPosts } = useContext(PostContext);
   const theme = useTheme();
   const [loading, setLoading] = useState(false);
-
+  const dispatch = useDispatch();
   useEffect(() => {
     Alert.init(theme);
   }, []);
@@ -23,18 +24,19 @@ export default ({ user, lastElementRef, openCommentsPlace, openEditModal }) => {
     }
 
     setLoading(() => true);
-
-    setPosts((prevPosts) =>
-      prevPosts.map((post, i) =>
-        i === idx
-          ? {
-              ...post,
-              likes_count: post.isLiked
-                ? post.likes_count - 1
-                : post.likes_count + 1,
-              isLiked: !post.isLiked,
-            }
-          : post,
+    dispatch(
+      setPosts((prevPosts) =>
+        prevPosts.map((post, i) =>
+          i === idx
+            ? {
+                ...post,
+                likes_count: post.isLiked
+                  ? post.likes_count - 1
+                  : post.likes_count + 1,
+                isLiked: !post.isLiked,
+              }
+            : post,
+        ),
       ),
     );
 
@@ -51,7 +53,8 @@ export default ({ user, lastElementRef, openCommentsPlace, openEditModal }) => {
 
     let post = posts[idx];
     await DeletePost(post.id);
-    setPosts(posts.filter((p) => p.id !== post.id));
+
+    dispatch(setPosts(posts.filter((p) => p.id !== post.id)));
 
     setLoading(() => false);
   };

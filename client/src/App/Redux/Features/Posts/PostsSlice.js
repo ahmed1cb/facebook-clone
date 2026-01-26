@@ -12,11 +12,7 @@ export const postsSlice = createSlice({
     initialState,
     reducers: {
         setPosts: (state, action) => {
-            const updated = action.payload;
-            const index = state.posts.findIndex(p => p.id === updated.id);
-            if (index !== -1) {
-                state.posts[index] = updated;
-            }
+            state.posts = action.payload
         },
         setVideos: (state, action) => {
             const updated = action.payload;
@@ -33,7 +29,11 @@ export const postsSlice = createSlice({
         }).addCase(getPosts.rejected, (s) => {
             s.state = 'Fail'
         }).addCase(getPosts.fulfilled, (s, a) => {
-            s.posts = a.payload?.data?.posts || []
+            const newPosts = a.payload?.data?.posts || [];
+            s.posts = s.posts ? [...s.posts, ...newPosts] : newPosts;
+            s.posts = s.posts.filter(
+                (post, index, self) => self.findIndex(p => p.id === post.id) === index
+            );
             s.state = 'Success'
         })
 
@@ -52,6 +52,6 @@ export const postsSlice = createSlice({
 })
 
 
-export const { setPosts , setVideos} = postsSlice.actions
+export const { setPosts, setVideos } = postsSlice.actions
 
 export default postsSlice.reducer

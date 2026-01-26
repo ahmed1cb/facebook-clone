@@ -35,13 +35,13 @@ import {
   Close,
   Add,
 } from "@mui/icons-material";
+import { setPosts } from "../../App/Redux/Features/Posts/PostsSlice";
 
 const Home = () => {
   const dispatch = useDispatch();
   const theme = useTheme();
   const observerRef = useRef();
 
-  // Scroll to top functionality
   const trigger = useScrollTrigger({
     disableHysteresis: true,
     threshold: 100,
@@ -57,9 +57,8 @@ const Home = () => {
   const user = useSelector((s) => s.auth.user);
   const friends = user.friends;
   const { state, error } = useSelector((s) => s.posts);
-  const postsFromRedux = useSelector((s) => s.posts.posts || []);
+  const posts = useSelector((s) => s.posts.posts || []);
 
-  const [combinedPosts, setCombinedPosts] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -67,41 +66,14 @@ const Home = () => {
   const [showComments, setShowComments] = useState(false);
   const [open, setOpen] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [refetchError, setRefetchError] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [mobileContactsOpen, setMobileContactsOpen] = useState(false);
 
   useEffect(() => {
-    dispatch(getPosts(1));
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (
-      !isLoadingMore &&
-      combinedPosts.length === 0 &&
-      postsFromRedux.length > 0
-    ) {
-      setCombinedPosts(postsFromRedux);
-      setRefetchError(false);
-      return;
+    if (!posts || posts.length == 0) {
+      dispatch(getPosts(1));
     }
-
-    if (isLoadingMore) {
-      setCombinedPosts((prev) => {
-        if (!postsFromRedux || postsFromRedux.length === 0) {
-          setHasMore(false);
-          return prev;
-        }
-
-        const newPosts = postsFromRedux.filter(
-          (p) => !prev.some((c) => c.id === p.id),
-        );
-        return [...prev, ...newPosts];
-      });
-      setIsLoadingMore(false);
-      setRefetchError(false);
-    }
-  }, [postsFromRedux, isLoadingMore, combinedPosts.length]);
+  }, [posts]);
 
   const lastPostElementRef = useCallback(
     (node) => {
@@ -115,10 +87,14 @@ const Home = () => {
             setIsLoadingMore(true);
             const nextPage = page + 1;
             setPage(nextPage);
-            dispatch(getPosts(nextPage)).catch(() => {
-              setRefetchError(true);
-              setHasMore(false);
-            });
+            dispatch(getPosts(nextPage))
+              .unwrap()
+              .then((res) => {
+                if (!res.data.posts || res.data.posts.length === 0) {
+                  setHasMore(false);
+                }
+              })
+              .finally(() => setIsLoadingMore(false));
           }
         },
         { threshold: 0.5, rootMargin: "100px" },
@@ -129,13 +105,11 @@ const Home = () => {
     [state, isLoadingMore, hasMore, page, dispatch],
   );
 
-  const onUpload = useCallback((newPost) => {
-    if (newPost.post_privacy === "PUB") {
-      setCombinedPosts((prev) =>
-        prev.some((p) => p.id === newPost.id) ? prev : [newPost, ...prev],
-      );
+  const onUpload = (post) => {
+    if (post.post_privacy === "PUB") {
+      dispatch(setPosts([post, ...posts]));
     }
-  }, []);
+  };
 
   const openCommentsPlace = useCallback((post) => {
     setActivePost(post);
@@ -150,15 +124,13 @@ const Home = () => {
   const handleRefresh = () => {
     setPage(1);
     setHasMore(true);
-    setCombinedPosts([]);
+    setPosts([]);
     setIsLoadingMore(true);
     dispatch(getPosts(1));
   };
 
   return (
-    <PostContext.Provider
-      value={{ posts: combinedPosts, setPosts: setCombinedPosts }}
-    >
+    <PostContext.Provider value={{ posts, setPosts }}>
       <Box
         sx={{
           minHeight: "100vh",
@@ -235,7 +207,7 @@ const Home = () => {
               />
               <Chip
                 icon={<TrendingUp />}
-                label={`${combinedPosts.length} Posts`}
+                label={`${posts.length} Posts`}
                 size="small"
                 sx={{
                   bgcolor: theme.palette.success.main + "15",
@@ -333,7 +305,7 @@ const Home = () => {
                   />
                   <Chip
                     icon={<TrendingUp />}
-                    label={`${combinedPosts.length}`}
+                    label={`${posts.length}`}
                     size="small"
                     sx={{
                       bgcolor: theme.palette.success.main + "15",
@@ -401,13 +373,12 @@ const Home = () => {
                   gap: 3,
                 }}
               >
-                {combinedPosts.length > 0 ? (
-                  <Posts
-                    lastElementRef={lastPostElementRef}
-                    openCommentsPlace={openCommentsPlace}
-                    openEditModal={openEditModal}
-                  />
-                ) : state !== "Loading" ? (
+                <Posts
+                  lastElementRef={lastPostElementRef}
+                  openCommentsPlace={openCommentsPlace}
+                  openEditModal={openEditModal}
+                />
+                {state !== "Loading" && posts.length == 0 ? (
                   <Box
                     sx={{
                       textAlign: "center",
@@ -481,7 +452,7 @@ const Home = () => {
                   </Box>
                 )}
 
-                {!hasMore && combinedPosts.length > 0 && (
+                {!hasMore && posts.length > 0 && (
                   <Box
                     sx={{
                       textAlign: "center",
@@ -664,7 +635,6 @@ const Home = () => {
                   }}
                 >
                   <Add />
-                  
                 </Fab>
               </Box>
             </Zoom>
@@ -686,10 +656,15 @@ const Home = () => {
             onClose={() => setShowEditModal(false)}
             post={activePost}
             onUpdate={(updatedPost) =>
-              setCombinedPosts(
-                combinedPosts
-                  .map((p) => (p.id === updatedPost.id ? updatedPost : p))
-                  .filter((p) => p.post_privacy === "PUB"),
+              dispatch(
+                setPosts(
+                  posts
+                    .map((p) => (p.id === updatedPost.id ? updatedPost : p))
+                    .filter(
+                      (p) =>
+                        p.post_privacy === "PUB" || p.post_privacy === "FRI",
+                    ),
+                ),
               )
             }
           />
