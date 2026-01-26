@@ -29,10 +29,10 @@ export default () => {
   );
 
   return (
-    <Box sx={{ position: "sticky", top: 72 }}>
+    <Box sx={{ position: "sticky", top: 0 }}>
       <List>
         <ListItemButton
-          sx={{ borderRadius: 2, mb: 0.5 }}
+          sx={{ borderRadius: 2, mb: 1 }}
           onClick={() => go("/profile")}
         >
           <ListItemAvatar>{profileImage}</ListItemAvatar>

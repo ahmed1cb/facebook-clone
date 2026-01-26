@@ -33,9 +33,7 @@ export default ({ setOpen }) => {
   return (
     <Paper
       sx={{
-        p: 2,
-        mb: 2,
-        borderRadius: 2,
+        p: 2,        
         bgcolor: theme.palette.background.paper,
       }}
     >

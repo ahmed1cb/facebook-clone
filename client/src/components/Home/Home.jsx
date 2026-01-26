@@ -147,10 +147,15 @@ const Home = () => {
             alignItems: "center",
             justifyContent: "space-between",
             p: 2,
+            mt:1,
             bgcolor: theme.palette.background.paper,
             borderBottom: `1px solid ${theme.palette.divider}`,
-            position: "sticky",
-            top: 0,
+            position: "fixed",
+            width:'90%',
+            left:'50%',
+            transform:'translateX(-50%)',
+            borderRadius:'12px',
+            top:65,
             zIndex: 1100,
           }}
         >
@@ -180,59 +185,11 @@ const Home = () => {
             mt: { xs: 0, md: 0 },
           }}
         >
-          {/* Desktop Header Info Bar */}
-          <Box
-            sx={{
-              display: { xs: "none", md: "flex" },
-              alignItems: "center",
-              justifyContent: "space-between",
-              mb: 3,
-              p: 2,
-              bgcolor: theme.palette.background.paper,
-              borderRadius: 2,
-              border: `1px solid ${theme.palette.divider}`,
-              boxShadow: theme.shadows[1],
-            }}
-          >
-            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-              <Chip
-                icon={<Group />}
-                label={`${friends?.length || 0} Friends`}
-                size="small"
-                sx={{
-                  bgcolor: theme.palette.primary.main + "15",
-                  color: theme.palette.primary.main,
-                  fontWeight: 600,
-                }}
-              />
-              <Chip
-                icon={<TrendingUp />}
-                label={`${posts.length} Posts`}
-                size="small"
-                sx={{
-                  bgcolor: theme.palette.success.main + "15",
-                  color: theme.palette.success.main,
-                  fontWeight: 600,
-                }}
-              />
-            </Box>
-            <Typography
-              sx={{
-                fontWeight: 600,
-                color: theme.palette.text.secondary,
-                fontSize: "0.95rem",
-              }}
-            >
-              Welcome back, {user.name} 👋
-            </Typography>
-          </Box>
-
           <Grid
             container
             spacing={{ xs: 0, sm: 3, md: 4 }}
             sx={{ alignItems: "flex-start" }}
           >
-            {/* Desktop Sidebar */}
             <Grid
               item
               md={3}
@@ -268,7 +225,6 @@ const Home = () => {
               </Box>
             </Grid>
 
-            {/* Main Content - Full width on mobile */}
             <Grid
               item
               xs={12}
@@ -276,66 +232,20 @@ const Home = () => {
               lg={7}
               xl={8}
               sx={{
+                width: { sm: "100%", lg:'70% ' },
+
                 px: { xs: 0, sm: 0 },
               }}
             >
-              {/* Mobile stats bar */}
               <Box
                 sx={{
-                  display: { xs: "flex", md: "none" },
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  mb: 2,
-                  p: 1.5,
-                  bgcolor: theme.palette.background.paper,
-                  borderRadius: 2,
-                  border: `1px solid ${theme.palette.divider}`,
-                }}
-              >
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <Chip
-                    icon={<Group />}
-                    label={`${friends?.length || 0}`}
-                    size="small"
-                    sx={{
-                      bgcolor: theme.palette.primary.main + "15",
-                      color: theme.palette.primary.main,
-                      fontWeight: 600,
-                    }}
-                  />
-                  <Chip
-                    icon={<TrendingUp />}
-                    label={`${posts.length}`}
-                    size="small"
-                    sx={{
-                      bgcolor: theme.palette.success.main + "15",
-                      color: theme.palette.success.main,
-                      fontWeight: 600,
-                    }}
-                  />
-                </Box>
-                <Typography
-                  sx={{
-                    fontWeight: 600,
-                    color: theme.palette.text.secondary,
-                    fontSize: "0.85rem",
-                  }}
-                >
-                  Hi, {user.name.split(" ")[0]}
-                </Typography>
-              </Box>
-
-              <Box
-                sx={{
-                  position: "sticky",
                   top: { xs: 56, md: 84 },
                   zIndex: 10,
-                  bgcolor: theme.palette.background.paper,
+                  width: "100%",
                   borderRadius: 2,
-                  boxShadow: theme.shadows[2],
                   border: `1px solid ${theme.palette.divider}`,
-                  overflow: "hidden",
-                  mb: 3,
+                  mt: {sm:10,lg:0},
+                  mb:3
                 }}
               >
                 <CreatePost setOpen={setOpen} />
