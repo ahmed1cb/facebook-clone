@@ -17,7 +17,7 @@ const getPosts = createAsyncThunk('getPosts', async (page, { rejectWithValue }) 
         return response.data;
 
     } catch (e) {
-        return rejectWithValue(e)
+        return rejectWithValue(e.data)
     }
 
 })
@@ -38,7 +38,7 @@ const getVideos = createAsyncThunk('getVideos', async (page, { rejectWithValue }
         return response.data;
 
     } catch (e) {
-       return  rejectWithValue(e)
+       return  rejectWithValue(e.data)
     }
 
 })
