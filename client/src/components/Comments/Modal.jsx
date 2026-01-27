@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import { Close, Send, MoreVert, Delete } from "@mui/icons-material";
 import api from "../../App/services/api";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import PostContext from "../../App/Context/PostsContext";
 import { comment, deleteCommentById } from "../../App/services/postservices";
 
@@ -34,7 +34,7 @@ export default function CommentsModal({
   const [deleting, setDeleting] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedComment, setSelectedComment] = useState(null);
-
+  const dispatch = useDispatch();
   const authUser = useSelector((s) => s.auth.user);
   const { setPosts } = useContext(PostContext);
 
@@ -54,13 +54,6 @@ export default function CommentsModal({
       onComment(newComment);
 
       setComments((prev) => [...prev, newComment]);
-      setPosts?.((posts) =>
-        posts.map((p) =>
-          p.id === post.id
-            ? { ...p, comments: [...p.comments, newComment] }
-            : p,
-        ),
-      );
 
       setText("");
     } finally {
@@ -87,17 +80,6 @@ export default function CommentsModal({
 
       setComments((prev) => prev.filter((c) => c.id !== selectedComment.id));
       onDelete(selectedComment.id);
-
-      setPosts?.((posts) =>
-        posts.map((p) =>
-          p.id === post.id
-            ? {
-                ...p,
-                comments: p.comments.filter((c) => c.id !== selectedComment.id),
-              }
-            : p,
-        ),
-      );
     } finally {
       setDeleting(false);
       handleMenuClose();
