@@ -11,7 +11,22 @@ import {
   Alert,
   CircularProgress,
   useTheme,
+  InputAdornment,
+  IconButton,
+  Fade,
+  Zoom,
+  alpha,
+  useMediaQuery,
 } from "@mui/material";
+import {
+  Facebook as FacebookIcon,
+  Email,
+  Lock,
+  Visibility,
+  VisibilityOff,
+  ArrowForward,
+  PersonAdd,
+} from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { loginSchema } from "../../../App/Validations/Auth";
 import { login } from "../../../App/services/authServices";
@@ -20,13 +35,14 @@ import Cookie from "../../../App/Cookie/Cookie";
 const Login = () => {
   const theme = useTheme();
   const go = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
-    if(Cookie.get('authorization')){
-      go('/')
+    if (Cookie.get("authorization")) {
+      go("/");
     }
-  },[])
-  
+  }, []);
+
   const [data, setData] = useState({
     email: "",
     password: "",
@@ -62,166 +78,419 @@ const Login = () => {
   };
 
   return (
-    <Box
-      sx={{
-        minHeight: "100vh",
-        bgcolor: theme.palette.background.default,
-        display: "flex",
-        alignItems: "center",
-        py: 4,
-      }}
-    >
-      <Container maxWidth="lg">
-        <Grid container spacing={4} alignItems="center">
-          <Grid item xs={12} md={6}>
-            <Box sx={{ pr: { md: 4 } }}>
-              <Typography
-                variant="h2"
-                sx={{
-                  color: theme.palette.primary.main,
-                  fontWeight: 700,
-                  mb: 2,
-                  fontSize: { xs: "3rem", md: "4rem" },
-                }}
-              >
-                facebook
-              </Typography>
-              <Typography
-                variant="h5"
-                sx={{
-                  color: theme.palette.text.primary,
-                  fontWeight: 400,
-                  lineHeight: 1.4,
-                }}
-              >
-                Facebook helps you connect and share with the people in your
-                life.
-              </Typography>
-            </Box>
-          </Grid>
-
-          {/* Right Side */}
-          <Grid item xs={12} md={6}>
-            <Paper
-              elevation={3}
-              sx={{
-                p: 4,
-                borderRadius: 2,
-                bgcolor: theme.palette.background.paper,
-              }}
+    <Fade in timeout={500}>
+      <Box
+        sx={{
+          minHeight: "100vh",
+          background: `linear-gradient(135deg, ${alpha(
+            theme.palette.primary.main,
+            0.05,
+          )}, ${alpha(theme.palette.secondary.main, 0.05)})`,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          py: { xs: 2, md: 4 },
+          px: { xs: 2, sm: 0 },
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        <Container maxWidth="lg">
+          <Zoom in timeout={700} style={{ transitionDelay: "100ms" }}>
+            <Grid
+              container
+              spacing={{ xs: 3, md: 6 }}
+              alignItems="center"
+              justifyContent="center"
             >
-              <Box component="form" onSubmit={handleLogin}>
-                {error && (
-                  <Alert severity="error" sx={{ mb: 2.5 }}>
-                    {error}
-                  </Alert>
-                )}
-
-                <TextField
-                  fullWidth
-                  type="email"
-                  name="email"
-                  placeholder="Email address"
-                  value={data.email}
-                  onChange={(e) =>
-                    setData((prev) => ({ ...prev, email: e.target.value }))
-                  }
+              {/* Left Side - Branding */}
+              <Grid item xs={12} md={6}>
+                <Box
                   sx={{
-                    mb: 1.5,
-                    "& .MuiOutlinedInput-root": {
-                      borderRadius: 1.5,
-                      fontSize: "1.0625rem",
-                      height: 52,
-                    },
-                  }}
-                  disabled={isLoading}
-                />
-
-                <TextField
-                  fullWidth
-                  type="password"
-                  name="password"
-                  placeholder="Password"
-                  value={data.password}
-                  onChange={(e) =>
-                    setData((prev) => ({ ...prev, password: e.target.value }))
-                  }
-                  sx={{
-                    mb: 2,
-                    "& .MuiOutlinedInput-root": {
-                      borderRadius: 1.5,
-                      fontSize: "1.0625rem",
-                      height: 52,
-                    },
-                  }}
-                  disabled={isLoading}
-                />
-
-                <Button
-                  fullWidth
-                  type="submit"
-                  variant="contained"
-                  size="large"
-                  disabled={isLoading}
-                  sx={{
-                    mb: 2,
-                    height: 48,
-                    fontSize: "1.25rem",
-                    fontWeight: 700,
-                    borderRadius: 1.5,
+                    pr: { md: 6 },
+                    textAlign: { xs: "center", md: "left" },
                   }}
                 >
-                  {isLoading ? (
-                    <CircularProgress size={24} color="inherit" />
-                  ) : (
-                    "Log in"
-                  )}
-                </Button>
-
-                <Divider sx={{ mb: 3, borderColor: theme.palette.divider }} />
-
-                <Box sx={{ textAlign: "center" }}>
-                  <Button
-                    onClick={() => go("/auth/register")}
-                    variant="contained"
-                    color="secondary"
+                  <Box
                     sx={{
-                      px: 4,
-                      py: 1.5,
-                      fontSize: "1.0625rem",
-                      fontWeight: 700,
-                      borderRadius: 1.5,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: { xs: "center", md: "flex-start" },
+                      mb: 3,
                     }}
                   >
-                    Create new account
-                  </Button>
+                    <FacebookIcon
+                      sx={{
+                        fontSize: { xs: 48, md: 64 },
+                        color: theme.palette.primary.main,
+                        mr: 2,
+                      }}
+                    />
+                    <Typography
+                      variant="h1"
+                      sx={{
+                        color: theme.palette.primary.main,
+                        fontWeight: 800,
+                        mb: 1,
+                        fontSize: {
+                          xs: "2.5rem",
+                          sm: "3rem",
+                          md: "3.5rem",
+                          lg: "4rem",
+                        },
+                        letterSpacing: "-0.5px",
+                        background: `linear-gradient(135deg, 
+                          ${theme.palette.primary.main}, 
+                          ${theme.palette.secondary.main}
+                        )`,
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        backgroundClip: "text",
+                      }}
+                    >
+                      facebook
+                    </Typography>
+                  </Box>
+                  <Typography
+                    variant="h4"
+                    sx={{
+                      color: theme.palette.text.primary,
+                      fontWeight: 400,
+                      lineHeight: 1.3,
+                      mb: 2,
+                      fontSize: {
+                        xs: "1.5rem",
+                        md: "1.75rem",
+                        lg: "2rem",
+                      },
+                    }}
+                  >
+                    Connect with friends and the world around you.
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      color: theme.palette.text.secondary,
+                      fontSize: "1.1rem",
+                      lineHeight: 1.6,
+                      opacity: 0.8,
+                      maxWidth: "90%",
+                      mx: { xs: "auto", md: 0 },
+                    }}
+                  >
+                    Facebook helps you connect and share with the people in your
+                    life.
+                  </Typography>
                 </Box>
-              </Box>
-            </Paper>
-          </Grid>
-        </Grid>
+              </Grid>
 
-        {/* Footer */}
-        <Box
-          sx={{
-            mt: 4,
-            pt: 3,
-            borderTop: `1px solid ${theme.palette.divider}`,
-            textAlign: "center",
-          }}
-        >
-          <Typography
-            variant="body2"
-            sx={{
-              color: theme.palette.text.secondary,
-              fontSize: "0.875rem",
-            }}
-          >
-            Ahmed Hassan © {new Date().getFullYear()}
-          </Typography>
-        </Box>
-      </Container>
-    </Box>
+              {/* Right Side - Login Form */}
+              <Grid item xs={12} sm={10} md={6} lg={5}>
+                <Zoom in timeout={800} style={{ transitionDelay: "200ms" }}>
+                  <Paper
+                    elevation={8}
+                    sx={{
+                      p: { xs: 3, sm: 4, md: 4.5 },
+                      borderRadius: 4,
+                      bgcolor: theme.palette.background.paper,
+                      border: `1px solid ${alpha(theme.palette.divider, 0.2)}`,
+                      boxShadow: theme.shadows[10],
+                      transition: "all 0.3s ease",
+                      "&:hover": {
+                        boxShadow: theme.shadows[16],
+                        transform: "translateY(-4px)",
+                      },
+                      position: "relative",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <Box
+                      component="form"
+                      onSubmit={handleLogin}
+                      sx={{
+                        "& .MuiTextField-root": {
+                          my: 1.5,
+                        },
+                      }}
+                    >
+                      <Typography
+                        variant="h5"
+                        sx={{
+                          mb: 3,
+                          fontWeight: 600,
+                          textAlign: "center",
+                          color: theme.palette.text.primary,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: 1,
+                        }}
+                      >
+                        <Lock fontSize="small" />
+                        Log In to Your Account
+                      </Typography>
+
+                      {error && (
+                        <Fade in>
+                          <Alert
+                            severity="error"
+                            sx={{
+                              mb: 3,
+                              borderRadius: 2,
+                              border: `1px solid ${theme.palette.error.light}`,
+                              bgcolor: alpha(theme.palette.error.main, 0.1),
+                              "& .MuiAlert-icon": {
+                                color: theme.palette.error.main,
+                              },
+                            }}
+                          >
+                            {error}
+                          </Alert>
+                        </Fade>
+                      )}
+
+                      <TextField
+                        fullWidth
+                        type="email"
+                        name="email"
+                        label="Email Address"
+                        placeholder="Enter your email"
+                        value={data.email}
+                        onChange={(e) =>
+                          setData((prev) => ({
+                            ...prev,
+                            email: e.target.value,
+                          }))
+                        }
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <Email
+                                sx={{
+                                  color: theme.palette.primary.main,
+                                  opacity: 0.7,
+                                }}
+                              />
+                            </InputAdornment>
+                          ),
+                          sx: {
+                            borderRadius: 2,
+                            fontSize: "1rem",
+                            height: 56,
+                            "&:hover .MuiOutlinedInput-notchedOutline": {
+                              borderColor: theme.palette.primary.main,
+                            },
+                          },
+                        }}
+                        disabled={isLoading}
+                        variant="outlined"
+                      />
+
+                      <TextField
+                        fullWidth
+                        type={showPassword ? "text" : "password"}
+                        name="password"
+                        label="Password"
+                        placeholder="Enter your password"
+                        value={data.password}
+                        onChange={(e) =>
+                          setData((prev) => ({
+                            ...prev,
+                            password: e.target.value,
+                          }))
+                        }
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <Lock
+                                sx={{
+                                  color: theme.palette.primary.main,
+                                  opacity: 0.7,
+                                }}
+                              />
+                            </InputAdornment>
+                          ),
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={() => setShowPassword(!showPassword)}
+                                edge="end"
+                                size="small"
+                                sx={{ color: theme.palette.text.secondary }}
+                              >
+                                {showPassword ? (
+                                  <VisibilityOff />
+                                ) : (
+                                  <Visibility />
+                                )}
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                          sx: {
+                            borderRadius: 2,
+                            fontSize: "1rem",
+                            height: 56,
+                            "&:hover .MuiOutlinedInput-notchedOutline": {
+                              borderColor: theme.palette.primary.main,
+                            },
+                          },
+                        }}
+                        disabled={isLoading}
+                        variant="outlined"
+                      />
+
+                      <Button
+                        fullWidth
+                        type="submit"
+                        variant="contained"
+                        size="large"
+                        disabled={isLoading}
+                        sx={{
+                          mt: 2,
+                          mb: 3,
+                          height: 50,
+                          fontSize: "1.1rem",
+                          fontWeight: 600,
+                          borderRadius: 2,
+                          textTransform: "none",
+                          background: `linear-gradient(135deg, 
+                            ${theme.palette.primary.main}, 
+                            ${theme.palette.primary.dark}
+                          )`,
+                          boxShadow: theme.shadows[4],
+                          "&:hover": {
+                            background: `linear-gradient(135deg, 
+                              ${theme.palette.primary.dark}, 
+                              ${theme.palette.primary.main}
+                            )`,
+                            boxShadow: theme.shadows[8],
+                            transform: "translateY(-2px)",
+                          },
+                          transition: "all 0.2s ease",
+                          position: "relative",
+                          overflow: "hidden",
+                          "& .MuiCircularProgress-root": {
+                            position: "absolute",
+                          },
+                        }}
+                      >
+                        {isLoading ? (
+                          <CircularProgress size={24} sx={{ color: "white" }} />
+                        ) : (
+                          <>
+                            Log In
+                            <ArrowForward sx={{ ml: 1, fontSize: 20 }} />
+                          </>
+                        )}
+                      </Button>
+
+                      <Divider
+                        sx={{
+                          mb: 3,
+                          "&::before, &::after": {
+                            borderColor: alpha(theme.palette.divider, 0.3),
+                          },
+                        }}
+                      >
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            color: theme.palette.text.secondary,
+                            px: 2,
+                            fontWeight: 500,
+                          }}
+                        >
+                          New to Facebook?
+                        </Typography>
+                      </Divider>
+
+                      <Button
+                        fullWidth
+                        onClick={() => go("/auth/register")}
+                        variant="outlined"
+                        color="secondary"
+                        size="large"
+                        startIcon={<PersonAdd />}
+                        sx={{
+                          height: 50,
+                          fontSize: "1rem",
+                          fontWeight: 600,
+                          borderRadius: 2,
+                          textTransform: "none",
+                          borderWidth: 2,
+                          "&:hover": {
+                            borderWidth: 2,
+                            bgcolor: alpha(theme.palette.secondary.main, 0.1),
+                            transform: "translateY(-2px)",
+                            boxShadow: theme.shadows[4],
+                          },
+                          transition: "all 0.2s ease",
+                        }}
+                      >
+                        Create New Account
+                      </Button>
+                    </Box>
+                  </Paper>
+                </Zoom>
+              </Grid>
+            </Grid>
+          </Zoom>
+
+          {/* Footer */}
+          <Fade in timeout={1000}>
+            <Box
+              sx={{
+                mt: 6,
+                pt: 4,
+                borderTop: `1px solid ${alpha(theme.palette.divider, 0.3)}`,
+                textAlign: "center",
+              }}
+            >
+              <Typography
+                variant="body2"
+                sx={{
+                  color: theme.palette.text.secondary,
+                  fontSize: "0.875rem",
+                  opacity: 0.8,
+                  "& a": {
+                    color: theme.palette.primary.main,
+                    textDecoration: "none",
+                    "&:hover": {
+                      textDecoration: "underline",
+                    },
+                  },
+                }}
+              >
+                © {new Date().getFullYear()} Ahmed Hassan •{" "}
+                <a href="#" onClick={(e) => e.preventDefault()}>
+                  Privacy
+                </a>{" "}
+                •{" "}
+                <a href="#" onClick={(e) => e.preventDefault()}>
+                  Terms
+                </a>{" "}
+                •{" "}
+                <a href="#" onClick={(e) => e.preventDefault()}>
+                  Cookies
+                </a>
+              </Typography>
+              <Typography
+                variant="caption"
+                sx={{
+                  color: theme.palette.text.disabled,
+                  mt: 1,
+                  display: "block",
+                  fontSize: "0.75rem",
+                }}
+              >
+                Facebook Clone - For Educational Purposes
+              </Typography>
+            </Box>
+          </Fade>
+        </Container>
+      </Box>
+    </Fade>
   );
 };
 
