@@ -1,5 +1,27 @@
 import { useState, useEffect } from "react";
-import { Box, Container, Grid, useTheme } from "@mui/material";
+import {
+  Box,
+  Container,
+  Grid,
+  Paper,
+  Typography,
+  Chip,
+  Tabs,
+  Tab,
+  Stack,
+  Button,
+  Divider,
+  useTheme,
+  alpha,
+} from "@mui/material";
+import {
+  Search as SearchIcon,
+  Person,
+  Article,
+  Photo,
+  Groups,
+  FilterList,
+} from "@mui/icons-material";
 import SearchResultsList from "./SearchResultsList";
 import { useParams } from "react-router-dom";
 
@@ -9,6 +31,14 @@ const SearchResults = () => {
   const [results, setResults] = useState([]);
 
   const { query: searchQuery } = useParams();
+
+  const filterOptions = [
+    { value: "all", label: "All Results", icon: <SearchIcon /> },
+    { value: "people", label: "People", icon: <Person /> },
+    { value: "posts", label: "Posts", icon: <Article /> },
+    { value: "photos", label: "Photos", icon: <Photo /> },
+    { value: "groups", label: "Groups", icon: <Groups /> },
+  ];
 
   const allResults = {
     people: [
@@ -164,32 +194,90 @@ const SearchResults = () => {
     }
   }, [activeFilter]);
 
+  const handleFilterChange = (event, newValue) => {
+    setActiveFilter(newValue);
+  };
+
   return (
     <Box
       sx={{
         bgcolor: theme.palette.background.default,
         minHeight: "100vh",
-        width: "100%",
-
         py: 3,
       }}
     >
-      <Container maxWidth="xl">
-        <Grid
-          container
-          spacing={3}
-          sx={{
-            width: "100%",
-          }}
-        >
-          <Grid
-            item
-            xs={12}
-            md={9}
-            sx={{
-              width: "100%",
-            }}
-          >
+      <Container maxWidth="lg">
+        <Grid container spacing={3}>
+          {/* Main Content Area */}
+          <Grid item xs={12} lg={9}>
+            {/* Filter Tabs */}
+            <Paper
+              elevation={0}
+              sx={{
+                mb: 3,
+                borderRadius: 2,
+                border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+                overflow: "hidden",
+              }}
+            >
+              <Box
+                sx={{
+                  px: 2,
+                  pt: 2,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Typography variant="subtitle1" fontWeight={600}>
+                  Filter Results
+                </Typography>
+                <Chip
+                  icon={<FilterList />}
+                  label="Filters"
+                  variant="outlined"
+                  size="small"
+                />
+              </Box>
+              <Tabs
+                value={activeFilter}
+                onChange={handleFilterChange}
+                variant="scrollable"
+                scrollButtons="auto"
+                sx={{
+                  borderBottom: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+                  "& .MuiTab-root": {
+                    textTransform: "none",
+                    minHeight: 56,
+                  },
+                }}
+              >
+                {filterOptions.map((option) => (
+                  <Tab
+                    key={option.value}
+                    value={option.value}
+                    icon={option.icon}
+                    iconPosition="start"
+                    label={option.label}
+                  />
+                ))}
+              </Tabs>
+            </Paper>
+
+            {/* Results Count */}
+            <Box sx={{ mb: 2, display: "flex", alignItems: "center", gap: 1 }}>
+              <Typography variant="body2" color="text.secondary">
+                Showing
+              </Typography>
+              <Chip
+                label={`${results.length} results`}
+                size="small"
+                color="primary"
+                variant="outlined"
+              />
+            </Box>
+
+            {/* Search Results Grid */}
             <SearchResultsList
               results={results}
               filter={activeFilter}
