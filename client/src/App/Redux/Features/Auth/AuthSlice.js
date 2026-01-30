@@ -18,13 +18,18 @@ export const authSlice = createSlice({
         }
     },
     extraReducers: (b) => {
-        // User
         b.addCase(getAuthorizedUser.pending, (s) => {
             s.loading = true;
             s.state = 'Loading'
 
         }).addCase(getAuthorizedUser.rejected, (s, a) => {
-            s.state = 'Fail'
+            let status = a.payload.statusCode
+            if (status == 400 || status == 401) {
+                s.state = 'Fail'
+            } else {
+                s.state = 'InternalError'
+            }
+
         }).addCase(getAuthorizedUser.fulfilled, (s, a) => {
             if (a.payload) {
                 s.state = 'Success'

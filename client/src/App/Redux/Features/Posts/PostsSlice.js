@@ -4,7 +4,8 @@ import { getPosts, getVideos } from './Services'
 const initialState = {
     posts: null,
     videos: null,
-    state: "Loading"
+    state: "Normal",
+    hasMore: true,
 }
 
 export const postsSlice = createSlice({
@@ -14,12 +15,9 @@ export const postsSlice = createSlice({
         setPosts: (state, action) => {
             state.posts = action.payload
         },
+
         setVideos: (state, action) => {
-            const updated = action.payload;
-            const index = state.videos.findIndex(p => p.id === updated.id);
-            if (index !== -1) {
-                state.videos[index] = updated;
-            }
+            state.videos = action.payload;
         }
     },
 
@@ -43,7 +41,16 @@ export const postsSlice = createSlice({
         }).addCase(getVideos.rejected, (s) => {
             s.state = 'Fail'
         }).addCase(getVideos.fulfilled, (s, a) => {
-            s.videos = a.payload?.data?.videos || []
+            const newVideos = a.payload?.data?.videos || [];
+            s.videos = s.videos ? [...s.videos, ...newVideos] : newVideos;
+            s.videos = s.videos.filter(
+                (video, index, self) => self.findIndex(v => v.id === video.id) === index
+            );
+
+            if (newVideos.length === 0) {
+                s.hasMore = false
+            }
+
             s.state = 'Success'
         })
 

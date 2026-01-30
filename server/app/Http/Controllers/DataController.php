@@ -25,7 +25,7 @@ class DataController extends Controller
             }
         ])->limit(300)->get();
 
-        $people = User::where('name', 'LIKE', "%{$query}%")->orWhere('location', 'LIKE', "%{$query}%")->limit(300)->get();
+        $people = User::where('id', '!=', $userId)->where('name', 'LIKE', "%{$query}%")->orWhere('location', 'LIKE', "%{$query}%")->limit(300)->get();
 
         return Response::json([
             'posts' => $posts,

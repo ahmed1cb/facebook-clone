@@ -128,6 +128,7 @@ const SearchResultCard = ({ result }) => {
           },
         }}
       >
+        
         <CardContent sx={{ p: 3, pb: 2 }}>
           <Stack direction="row" spacing={2} alignItems="flex-start">
             <Avatar

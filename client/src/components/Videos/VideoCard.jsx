@@ -105,7 +105,7 @@ const VideoCard = (props) => {
         sx={{
           position: "relative",
           width: "100%",
-          height: "100vh",
+          height: "100%",
           bgcolor: "black",
           overflow: "hidden",
           cursor: "pointer",
@@ -122,11 +122,14 @@ const VideoCard = (props) => {
             width: "100%",
             height: "100%",
           }}
-          loop
+
           playsInline
           muted={isMuted}
           onTimeUpdate={handleTimeUpdate}
-          onEnded={() => setIsPlaying(false)}
+          onEnded={() => {
+             setIsPlaying(false);
+             if(props.onEnded) props.onEnded();
+          }}
         />
 
         {/* Top Bar */}
@@ -284,7 +287,10 @@ const VideoCard = (props) => {
           {/* Comment Button */}
           <Box sx={{ textAlign: "center" }}>
             <IconButton
-              onClick={(e) => {e.stopPropagation(); props.onCommentClicked(video)}}
+              onClick={(e) => {
+                e.stopPropagation();
+                props.onCommentClicked(video);
+              }}
               sx={{
                 color: "white",
                 width: 44,

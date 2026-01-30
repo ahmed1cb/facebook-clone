@@ -5,46 +5,37 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import { getVideos } from "../../App/Redux/Features/Posts/Services";
 import CommentsModal from "../Comments/Modal";
 import Loader from "../Loader/Loader";
+import { setVideos } from "../../App/Redux/Features/Posts/PostsSlice";
 
 const Videos = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
-  const mainVideos = useSelector((s) => s.posts.videos) || [];
 
-  const [videos, setVideos] = useState([]);
+  const videos = useSelector((s) => s.posts.videos) || [];
+
   const [openComments, setOpenComments] = useState(false);
   const [activePost, setActivePost] = useState(null);
-  const { state } = useSelector((s) => s.posts);
+  const { state, hasMore } = useSelector((s) => s.posts);
   const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const isFetchingRef = useRef(false);
 
+  const isFetchingRef = useRef(false);
   useEffect(() => {
-    if (mainVideos.length === 0) {
+    if (videos.length === 0 && hasMore && state != "Loading") {
       dispatch(getVideos(1));
-    } else {
-      setVideos([...mainVideos]);
     }
-  }, [dispatch, mainVideos]);
+  }, [dispatch, videos]);
 
   const loadMoreVideos = useCallback(
     async (currentIndex) => {
       if (!hasMore || isFetchingRef.current) return;
       if (currentIndex < videos.length - 1) return;
-
+      if (state === "Loading") return;
       isFetchingRef.current = true;
       const nextPage = page + 1;
 
-      const result = await dispatch(getVideos(nextPage));
+      dispatch(getVideos(nextPage));
 
-      const newVideos = Array.isArray(result?.payload) ? result.payload : [];
-
-      if (newVideos.length === 0) {
-        setHasMore(false);
-      } else {
-        setVideos((prev) => [...prev, ...newVideos]);
-        setPage(nextPage);
-      }
+      setPage(nextPage);
 
       isFetchingRef.current = false;
     },
@@ -54,13 +45,14 @@ const Videos = () => {
   const handleComment = useCallback(
     (comment) => {
       if (!activePost) return;
-      setVideos((prev) =>
-        prev.map((v) =>
-          v.id === activePost.id
-            ? { ...v, comments: [...v.comments, comment] }
-            : v,
-        ),
+
+      let newVideos = videos.map((v) =>
+        v.id === activePost.id
+          ? { ...v, comment: [...v.comments, comment] }
+          : v,
       );
+
+      dispatch(setVideos(newVideos));
     },
     [activePost],
   );
@@ -68,11 +60,13 @@ const Videos = () => {
   const handleDelete = useCallback(
     (id) => {
       if (!activePost) return;
-      setVideos((prev) =>
-        prev.map((v) =>
-          v.id === activePost.id
-            ? { ...v, comments: v.comments.filter((c) => c.id !== id) }
-            : v,
+      dispatch(
+        setVideos((prev) =>
+          prev.map((v) =>
+            v.id === activePost.id
+              ? { ...v, comments: v.comments.filter((c) => c.id !== id) }
+              : v,
+          ),
         ),
       );
     },
@@ -83,12 +77,12 @@ const Videos = () => {
     (videos?.length === 0 && state === "Loading" && <Loader />) || (
       <Box
         sx={{
-          minHeight: "95vh",
+          height: "calc(100vh - 64px) !important",
           bgcolor: theme.palette.background.default,
           pt: 2,
         }}
       >
-        <Container maxWidth="lg">
+        <Container maxWidth="lg" sx={{ height: "100%" }}>
           <VideosList
             videos={videos}
             setOpen={setOpenComments}

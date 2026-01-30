@@ -33,11 +33,11 @@ export default ({ setOpen }) => {
   return (
     <Paper
       sx={{
-        p: 2,        
+        p: 2,
         bgcolor: theme.palette.background.paper,
       }}
     >
-      <Box sx={{ display: "flex", gap: 1.5 }}>
+      <Box sx={{ display: { xs: "none", md: "flex" }, gap: 1.5 }}>
         {profileImage}
         <Box
           onClick={() => {

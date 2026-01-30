@@ -15,6 +15,17 @@ export default ({ videos, setActivePost, setOpen, onEndReached }) => {
     if (currentIndex > 0) setCurrentIndex((prev) => prev - 1);
   };
 
+  const scrollToNextVideo = () => {
+    if (currentIndex < videos.length - 1) {
+      setCurrentIndex((prev) => prev + 1);
+      const nextIndex = currentIndex + 1;
+      const element = document.getElementById(`video-${videos[nextIndex].id}`);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  };
+
   useEffect(() => {
     if (
       currentIndex === videos.length - 1 &&
@@ -38,7 +49,7 @@ export default ({ videos, setActivePost, setOpen, onEndReached }) => {
     <Box
       sx={{
         position: "relative",
-        height: "100vh",
+        height: "100%",
         overflow: "hidden",
         bgcolor: theme.palette.grey[900],
       }}
@@ -47,7 +58,7 @@ export default ({ videos, setActivePost, setOpen, onEndReached }) => {
       <Box
         ref={containerRef}
         sx={{
-          height: "100vh",
+          height: "100%",
           overflowY: "auto",
           scrollSnapType: "y mandatory",
           "&::-webkit-scrollbar": { display: "none" },
@@ -66,9 +77,18 @@ export default ({ videos, setActivePost, setOpen, onEndReached }) => {
         {videos.map((video) => (
           <Box
             key={video.id}
-            sx={{ scrollSnapAlign: "start", scrollSnapStop: "always" }}
+            id={`video-${video.id}`}
+            sx={{
+              scrollSnapAlign: "start",
+              scrollSnapStop: "always",
+              height: "100%",
+            }}
           >
-            <VideoCard video={video} onCommentClicked={onCommentClicked} />
+            <VideoCard 
+              video={video} 
+              onCommentClicked={onCommentClicked} 
+              onEnded={scrollToNextVideo} 
+            />
           </Box>
         ))}
       </Box>

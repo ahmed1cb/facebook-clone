@@ -43,7 +43,7 @@ class PostController extends Controller
             'likes as isLiked' => function ($q) use ($userId) {
                 $q->where('user_id', $userId);
             }
-        ])->orderBy('id', 'Desc')->paginate(10, ['*'], 'page', $page);
+        ])->orderBy('likes_count', 'DESC')->paginate(10, ['*'], 'page', $page);
 
 
         return Response::json([

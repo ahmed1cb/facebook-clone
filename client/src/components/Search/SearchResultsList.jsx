@@ -192,7 +192,7 @@ const SearchResultsList = ({ results, filter, searchQuery }) => {
               label="Back to top"
               size="small"
               variant="outlined"
-              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              onClick={() => root.scrollTo({ top: 0, behavior: "smooth" })}
               sx={{
                 fontWeight: 500,
                 borderColor: alpha(theme.palette.primary.main, 0.3),

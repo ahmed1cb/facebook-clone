@@ -26,6 +26,7 @@ class AuthController extends Controller
             'friends.friend'
         ]);
 
+
         return Response::json([
             'user' => $user
         ], "Success", 200);
