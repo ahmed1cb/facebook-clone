@@ -15,7 +15,18 @@ class PostController extends Controller
     public function getPostDetails($postId)
     {
         $userId = request()->user()->id;
-        $targetPost = Post::whereId($postId)->with('comments')->withCount('likes', 'comments')
+        $friendsIds = request()->user()->friends()->pluck('id');
+        $targetPost = Post::where('id', $postId)->where(function ($q) use ($userId, $friendsIds) {
+            $q->where('post_privacy', 'PUB')
+                ->orWhere(function ($q) use ($userId) {
+                    $q->where('post_privacy', 'PRIV')
+                        ->where('user_id', $userId);
+                })
+                ->orWhere(function ($q) use ($friendsIds) {
+                    $q->where('post_privacy', 'FRI')
+                        ->whereIn('user_id', $friendsIds);
+                });
+        })->with('comments.user', 'user')->withCount('likes', 'comments')
             ->withExists([
                 'likes as isLiked' => function ($q) use ($userId) {
                     return $q->where('user_id', $userId);

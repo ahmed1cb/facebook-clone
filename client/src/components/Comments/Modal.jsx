@@ -26,7 +26,7 @@ export default function CommentsModal({
   onClose = () => {},
   post,
   onComment = () => {},
-  onDelete = () => {}
+  onDelete = () => {},
 }) {
   const [comments, setComments] = useState([]);
   const [text, setText] = useState("");

@@ -81,7 +81,7 @@ const upload = async (data) => {
 
 
 
-const updatePost = async (id , data) => {
+const updatePost = async (id, data) => {
     try {
         const response = await api.put(`/posts/${id}`, data, {
             headers: {
@@ -167,4 +167,34 @@ const deleteCommentById = async (comment) => {
 
 
 
-export { like, DeletePost, upload, comment, deleteCommentById , updatePost }
+const getPostById = async (id) => {
+
+    try {
+        const response = await api.get(`/posts/${id}`, {
+            headers: {
+                Authorization: Cookie.get('authorization'),
+            }
+        });
+
+        return {
+            data: response.data,
+            message: "Success",
+            code: response.status
+        }
+    } catch (error) {
+        return {
+            data: {},
+            message: 'Fail',
+            code: error?.status ?? 500,
+            error: error
+
+        }
+    }
+}
+
+
+
+
+
+
+export { like, DeletePost, upload, comment, deleteCommentById, updatePost, getPostById }
