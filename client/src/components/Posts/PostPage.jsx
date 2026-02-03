@@ -21,7 +21,7 @@ import {
   ChatBubbleOutline,
 } from "@mui/icons-material";
 import { useParams } from "react-router-dom";
-import { comment, getPostById } from "../../App/services/postservices";
+import { comment, getPostById, like } from "../../App/services/postservices";
 import api from "../../App/services/api";
 import Loader from "../Loader/Loader";
 import NotFound from "../States/404";
@@ -36,6 +36,7 @@ const PostPage = () => {
   const [loading, setLoading] = useState(true);
   const [openModal, setOpenModal] = useState(false);
   const user = useSelector((s) => s.auth.user);
+  const [isLiking, setisLiking] = useState(false);
 
   const getPost = useCallback(async () => {
     try {
@@ -53,13 +54,16 @@ const PostPage = () => {
     getPost();
   }, [getPost]);
 
-  const handleLikeToggle = () => {
-    if (!post) return;
+  const handleLikeToggle = async () => {
+    if (!post || isLiking) return;
+    setisLiking(true);
     setPost((prev) => ({
       ...prev,
       isLiked: !prev.isLiked,
       likes_count: prev.isLiked ? prev.likes_count - 1 : prev.likes_count + 1,
     }));
+    await like(post.id);
+    setisLiking(false);
   };
 
   const renderPostTypeIcon = () => {
