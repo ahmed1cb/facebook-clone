@@ -4,14 +4,17 @@ import {
   Avatar,
   Typography,
   Button,
-  IconButton,
   useTheme,
 } from "@mui/material";
-import { Edit, PersonAdd, Message } from "@mui/icons-material";
+import { PersonAdd, PersonRemove } from "@mui/icons-material";
 import api from "../../App/services/api";
+import { useState } from "react";
+import { request } from "../../App/services/usersServices";
 
 export default function ProfileHeader({ user, isOwnProfile = true }) {
   const theme = useTheme();
+  const [isRequested, setIsRequested] = useState(user.isRequested);
+  const [loading, setLoading] = useState(false);
 
   let profileImage = user.photo ? (
     <Avatar
@@ -42,6 +45,18 @@ export default function ProfileHeader({ user, isOwnProfile = true }) {
     </Avatar>
   );
 
+  const handleSendRequest = async () => {
+    const id = user.id;
+    if (loading || user.isFriend) return;
+
+    setIsRequested(!isRequested);
+
+    setLoading(true);
+
+    await request(id);
+
+    setLoading(false);
+  };
   return (
     <Box sx={{ bgcolor: theme.palette.background.default }}>
       {/* Cover Photo */}
@@ -115,16 +130,23 @@ export default function ProfileHeader({ user, isOwnProfile = true }) {
 
             {/* Action Buttons */}
             <Box sx={{ display: "flex", gap: 2 }}>
-              {!isOwnProfile && (
+              {(!isOwnProfile && !user.isFriend && (
                 <>
                   <Button
+                    disabled={loading}
                     variant="contained"
-                    startIcon={<PersonAdd />}
+                    color={isRequested ? "error" : "primary"}
+                    startIcon={isRequested ? <PersonRemove /> : <PersonAdd />}
                     sx={{ textTransform: "none", fontWeight: 600 }}
+                    onClick={() => handleSendRequest()}
                   >
-                    Add Friend
+                    {!isRequested ? "Send Request" : "Cancel Request"}
                   </Button>
                 </>
+              )) || (
+                <Typography component={"span"} sx={{ color: "gray" }}>
+                  Your Friend
+                </Typography>
               )}
             </Box>
           </Box>

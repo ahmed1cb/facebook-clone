@@ -11,7 +11,7 @@ class RequestsController extends Controller
     public function toggleFriendRequest($targetUserId)
     {
         $myId = request()->user()->id;
-        $targetUserExists = User::whereId($targetUserId)->whereId('id', '!=', $myId)->exists();
+        $targetUserExists = User::whereId($targetUserId)->where('id', '!=', $myId)->exists();
 
         if (!$targetUserExists) {
             return Response::json([], "The User You Looking For Not Found", 400);
