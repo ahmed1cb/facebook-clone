@@ -130,7 +130,7 @@ export default function ProfileHeader({ user, isOwnProfile = true }) {
 
             {/* Action Buttons */}
             <Box sx={{ display: "flex", gap: 2 }}>
-              {(!isOwnProfile && !user.isFriend && (
+              {(!isOwnProfile && !user.isFriend && !user.hasRequestFrom && (
                 <>
                   <Button
                     disabled={loading}
@@ -145,7 +145,9 @@ export default function ProfileHeader({ user, isOwnProfile = true }) {
                 </>
               )) || (
                 <Typography component={"span"} sx={{ color: "gray" }}>
-                  Your Friend
+                  {user.hasRequestFrom
+                    ? "You Have A Reqeust From This User"
+                    : "Your Friend"}
                 </Typography>
               )}
             </Box>

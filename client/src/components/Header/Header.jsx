@@ -21,6 +21,7 @@ import {
   Logout as LogoutIcon,
   Person,
   Settings,
+  Group,
 } from "@mui/icons-material";
 import { useLocation, useNavigate } from "react-router-dom";
 import Cookie from "../../App/Cookie/Cookie";
@@ -144,6 +145,20 @@ export default () => {
               onClick={() => go("/videos")}
             >
               <VideoIcon />
+            </IconButton>
+             <IconButton
+              sx={{
+                borderRadius: 2,
+                px: 4,
+                color: theme.palette.text.secondary,
+                borderBottom:
+                  path === "/friends"
+                    ? `3px solid ${theme.palette.primary.main}`
+                    : "",
+              }}
+              onClick={() => go("/friends")}
+            >
+              <Group />
             </IconButton>
             <IconButton
               sx={{

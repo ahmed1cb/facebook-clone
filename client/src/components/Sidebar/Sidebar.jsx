@@ -10,7 +10,7 @@ import {
 import { useSelector } from "react-redux";
 import api from "../../App/services/api";
 import { useNavigate } from "react-router-dom";
-import { Movie, Person, Settings } from "@mui/icons-material";
+import { Group, Movie, Person, Settings } from "@mui/icons-material";
 
 export default () => {
   const user = useSelector((s) => s.auth.user);
@@ -19,6 +19,7 @@ export default () => {
   const shortcuts = [
     { name: "Profile", icon: <Person />, uri: "/profile" },
     { name: "Watch", icon: <Movie />, uri: "/videos" },
+    { name: "Friends", icon: <Group />, uri: "/friends" },
     { name: "Settings", icon: <Settings />, uri: "/settings" },
   ];
 

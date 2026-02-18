@@ -23,7 +23,8 @@ class AuthController extends Controller
                 ]);
             }
             ,
-            'friends.friend'
+            'friends.friend',
+            'recivedRequests.sender'
         ]);
 
 

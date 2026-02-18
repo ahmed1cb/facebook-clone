@@ -13,7 +13,6 @@ class UsersController extends Controller
 
         $userExists = User::whereId($id)->exists();
 
-
         if (!$userExists) {
             return Response::json([], 'User Not Found', 404);
         }
@@ -39,7 +38,7 @@ class UsersController extends Controller
                     ])
                     ->orderBy('id', 'Desc');
             },
-            'friends.friend'
+            'friends.friend',
         ])->find($id);
 
 
@@ -47,8 +46,11 @@ class UsersController extends Controller
 
         $isFriend = request()->user()->friends()->where('friend_id', $id)->exists();
         $isRequested = Request::where('from_id', $authUserId)->where('to_id', $id)->exists();
+
+        $hasRequestFrom = Request::where('to_id', $authUserId)->where('from_id', $id)->exists();
         $user->isFriend = $isFriend;
         $user->isRequested = $isRequested;
+        $user->hasRequestFrom = $hasRequestFrom;
 
         return Response::json([
             'user' => $user

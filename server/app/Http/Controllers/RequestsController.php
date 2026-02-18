@@ -71,7 +71,7 @@ class RequestsController extends Controller
 
 
 
-    public function FriendRequest($senderId)
+    public function rejectFriendRequest($senderId)
     {
         $myId = request()->user()->id;
         $request = Request::where('from_id', $senderId)->where('to_id', $myId)->first();
