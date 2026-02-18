@@ -1,20 +1,21 @@
-FROM richarvey/nginx-php-fpm:3.1.6
+FROM php:8.2-fpm
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    git curl zip unzip libzip-dev \
+    && docker-php-ext-install pdo pdo_mysql zip
+
+# Install Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
 COPY . .
 
-# Install dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Laravel optimizations
 RUN php artisan config:cache
 RUN php artisan route:cache
 RUN php artisan view:cache
 
-ENV WEBROOT /var/www/html/public
-ENV APP_ENV production
-ENV APP_DEBUG false
-ENV LOG_CHANNEL stderr
-
-CMD ["/start.sh"]
+CMD ["php-fpm"]
