@@ -34,6 +34,10 @@ class FacebookAuthMiddleware
         }
         $user = $accessToken->tokenable;
 
+        if (!$user) {
+            return Response::json([], 'Invalid Token', 401);
+
+        }
         $user->withAccessToken($accessToken);
 
 
